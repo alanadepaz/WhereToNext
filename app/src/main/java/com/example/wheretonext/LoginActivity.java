@@ -29,11 +29,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        /*
+
         if (ParseUser.getCurrentUser() != null) {
             goMainActivity();
         }
-        */
+
         ivIcon = findViewById(R.id.ivIcon);
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        /*
+
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,8 +59,6 @@ public class LoginActivity extends AppCompatActivity {
                 goSignUpActivity();
             }
         });
-
-         */
     }
 
     private void loginUser(String username, String password) {
@@ -85,11 +83,9 @@ public class LoginActivity extends AppCompatActivity {
         finish();   // Finishing login activity once we've done the navigation
     }
 
-    /*
     private void goSignUpActivity() {
         Intent i = new Intent(this, SignUpActivity.class);
         startActivity(i);
         finish();   // Finishing login activity once we've done the navigation
     }
-     */
 }
