@@ -134,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
                         String commonName = name.getString("common");
                         countryList.add(commonName);
                     }
+                    // To put in alphabetical order
+                    java.util.Collections.sort(countryList);
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
