@@ -19,7 +19,7 @@
         android:id="@+id/btnToMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="To Map"
         tools:layout_editor_absoluteX="231dp"
         tools:layout_editor_absoluteY="205dp" />
 
