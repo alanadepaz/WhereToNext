@@ -31,7 +31,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (ParseUser.getCurrentUser() != null) {
-            goMapActivity();
+            //goMapActivity();
+            goMainActivity();
         }
 
         ivIcon = findViewById(R.id.ivIcon);
@@ -72,13 +73,21 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 // Navigate to the feed activity if the user has signed in properly
-                goMapActivity();
+                //goMapActivity();
+
+                goMainActivity();
             }
         });
     }
 
     private void goMapActivity() {
         Intent i = new Intent(this, MapActivity.class);
+        startActivity(i);
+        finish();   // Finishing login activity once we've done the navigation
+    }
+
+    private void goMainActivity() {
+        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();   // Finishing login activity once we've done the navigation
     }
