@@ -18,6 +18,12 @@
         android:theme="@style/Theme.WhereToNext"
         tools:targetApi="31">
         <activity
+            android:name=".FavoritePhrasesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PhrasesActivity"
+            android:exported="false" />
+        <activity
             android:name=".MapActivity"
             android:exported="false" />
         <activity
@@ -39,7 +45,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />

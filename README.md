@@ -194,3 +194,7 @@ private void queryPosts() {
 ```
 
 OPTIONAL: List endpoints if using existing API:
+
+Attributions:
+Used two types of Star Icons for the Favorites functionality:
+[Star icons created by Pixel perfect - Flaticon](https://www.flaticon.com/free-icons/star "star icons")
