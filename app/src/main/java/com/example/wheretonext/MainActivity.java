@@ -35,18 +35,11 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
     private Button btnToMap;
-    ArrayList<String> countryList;
-    ArrayAdapter<String> listAdapter;
-    Handler mainHandler = new Handler();
-    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        new fetchData().start();
-        initializeCountryList();
 
         btnToMap = findViewById(R.id.btnToMap);
 
@@ -57,16 +50,6 @@ public class MainActivity extends AppCompatActivity {
                 goMapActivity();
             }
         });
-    }
-
-    private void initializeCountryList() {
-
-        countryList = new ArrayList<>();
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, countryList);
-        ListView listView = (ListView) findViewById(R.id.countryList);
-        listView.setAdapter(listAdapter);
-
-        listAdapter.addAll(countryList);
     }
 
     @Override
@@ -95,65 +78,5 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    class fetchData extends Thread{
 
-        String data = "";
-
-        @Override
-        public void run() {
-            super.run();
-
-            mainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setMessage("Fetching Data");
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
-                }
-            });
-            try {
-                URL url = new URL("https://restcountries.com/v3.1/all?fields=name,languages");
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    Log.d(TAG, line);
-                    data = data + line;
-                }
-
-                if (!data.isEmpty()) {
-                    JSONArray countries = new JSONArray(data);
-                    //JSONArray countries = jsonObject.getJSONArray("all");
-                    countryList.clear();
-                    for (int i = 0; i < countries.length(); i++) {
-                        JSONObject names = countries.getJSONObject(i);
-                        JSONObject name = names.getJSONObject("name");
-                        String commonName = name.getString("common");
-                        countryList.add(commonName);
-                    }
-                    // To put in alphabetical order
-                    java.util.Collections.sort(countryList);
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            mainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-
-                    if(progressDialog.isShowing())
-                        progressDialog.dismiss();
-                    listAdapter.notifyDataSetChanged();
-                }
-            });
-        }
-    }
 }
