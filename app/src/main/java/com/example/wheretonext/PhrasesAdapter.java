@@ -13,9 +13,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseRelation;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.List;
@@ -80,19 +84,49 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
         private void favoritePhrase(Phrase phrase)
         {
-            // Save the phrase to a country
-            Country country = new Country();
-            country.setCountryName(countryName);
-            country.setLanguage(language);
-            country.addFavePhrase(phrase);
-            country.saveInBackground(new SaveCallback() {
+            ParseQuery<Country> query = ParseQuery.getQuery(Country.class);
+
+            query.whereEqualTo(Country.KEY_COUNTRY_NAME, countryName);
+            query.getFirstInBackground(new GetCallback<Country>() {
                 @Override
-                public void done(ParseException e) {
-                    if (e != null) {
-                        Log.e(TAG, "Error while saving", e);
-                        Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
+                public void done(Country country, ParseException e) {
+                    if (e == null) {
+                        // Country exists. Simply add phrase.
+                        country.addFavePhrase(phrase);
+                        country.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e != null) {
+                                    Log.e(TAG, "Error while saving", e);
+                                    Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
+                                }
+                                Log.i(TAG, "Favorite country and phrase save was successful!");
+                            }
+                        });
                     }
-                    Log.i(TAG, "Favorite country and phrase save was successful!");
+                    else {
+                        if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                            // Country doesn't exist. Create a new country.
+                            // Save the phrase to a country
+                            country = new Country();
+                            country.setCountryName(countryName);
+                            country.setLanguage(language);
+                            country.addFavePhrase(phrase);
+                            country.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e != null) {
+                                        Log.e(TAG, "Error while saving", e);
+                                        Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    Log.i(TAG, "Favorite country and phrase save was successful!");
+                                }
+                            });
+                        }
+                        else {
+                            Log.e(TAG, "Unknown error!");
+                        }
+                    }
                 }
             });
 
