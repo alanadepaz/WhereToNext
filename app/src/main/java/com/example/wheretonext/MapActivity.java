@@ -39,7 +39,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 // Implement OnMapReadyCallback.
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -50,6 +53,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     // For fetching country data
     ArrayList<String> countryList;
+    Map<String,String> countryAndLang = new HashMap<>();
     ArrayAdapter<String> listAdapter;
     Handler mainHandler = new Handler();
     ProgressDialog progressDialog;
@@ -76,18 +80,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // For fetching country data for the search
         new fetchData().start();
         initializeCountryList(mSearchText);
-
-        // For navigating to the Phrases page
-        btnToPhrases = findViewById(R.id.btnToPhrases);
-
-        btnToPhrases.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "btnToPhrases clicked");
-                goPhrasesActivity();
-            }
-        });
-
     }
 
     // For initializing the GoogleMap
@@ -168,11 +160,33 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         init(googleMap);
         Log.i(TAG, "Google map ready.");
 
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng position) {
+                //Get the lat long here from variable position
+                //Use GeoCoder class to fetch the country from latlong like this
+                Geocoder geocoder = new Geocoder(MapActivity.this);
+                List<Address> addresses = null;
+                try {
+                    addresses = geocoder.getFromLocation(position.latitude, position.longitude, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(addresses.size() > 0){
+                    String country = addresses.get(0).getCountryName();
+                    Log.i(TAG, "Country name: " + country);
+
+                    goPhrasesActivity(country);
+                }
+            }
+        });
     }
 
     // Navigate to the phrases activity
-    private void goPhrasesActivity() {
+    private void goPhrasesActivity(String countryName) {
         Intent i = new Intent(this, PhrasesActivity.class);
+        i.putExtra("countryName", countryName);
+        i.putExtra("language", countryAndLang.get(countryName));
         startActivity(i);
     }
 
@@ -205,7 +219,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             });
             try {
-                URL url = new URL("https://restcountries.com/v3.1/all?fields=name,languages");
+                URL url = new URL("https://restcountries.com/v2/all?fields=name,languages");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream inputStream = httpURLConnection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -218,17 +232,35 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 if (!data.isEmpty()) {
                     JSONArray countries = new JSONArray(data);
-                    //JSONArray countries = jsonObject.getJSONArray("all");
                     countryList.clear();
+                    countryAndLang.clear();
+
                     for (int i = 0; i < countries.length(); i++) {
-                        JSONObject names = countries.getJSONObject(i);
-                        JSONObject name = names.getJSONObject("name");
-                        String commonName = name.getString("common");
-                        countryList.add(commonName);
+                        JSONObject country = countries.getJSONObject(i);
+                        String countryName = country.getString("name");
+                        countryList.add(countryName);
+
+                        JSONArray languages = country.getJSONArray("languages");
+
+                        // Grab the first language listed, as it is the most spoken OR official language
+                        String language = languages.getJSONObject(0).getString("iso639_1");
+
+                        Log.i(TAG, "Country: " + countryName + ", Language: " + language);
+                        countryAndLang.put(countryName, language);
+                        }
                     }
+
+                    /*
+                    for (String country : countryAndLang.keySet()) {
+                        String countryName = country.toString();
+                        String langName = countryAndLang.get(country).toString();
+                        //Log.i(TAG, "Country: " + countryName + ", Lang: " + langName);
+                    }
+
+                     */
                     // To put in alphabetical order
                     java.util.Collections.sort(countryList);
-                }
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {

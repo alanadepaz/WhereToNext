@@ -2,6 +2,7 @@ package com.example.wheretonext;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +13,28 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseRelation;
+import com.parse.SaveCallback;
 
 import java.util.List;
 
 public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHolder> {
 
+    public static final String TAG = "PhrasesAdapter";
     private Context context;
     private List<Phrase> phrases;
     private Button btnFavePhrase;
 
-    public PhrasesAdapter(Context context, List<Phrase> phrases) {
+    private String countryName;
+    private String language;
+
+    public PhrasesAdapter(Context context, List<Phrase> phrases, String countryName, String language) {
         this.context = context;
         this.phrases = phrases;
+        this.countryName = countryName;
+        this.language = language;
     }
 
     @NonNull
@@ -64,8 +73,31 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(view.getContext(),"Phrase favorited!", Toast.LENGTH_LONG).show();
+                    favoritePhrase(phrase);
                 }
             });
+        }
+
+        private void favoritePhrase(Phrase phrase)
+        {
+            // Save the phrase to a country
+            Country country = new Country();
+            country.setCountryName(countryName);
+            country.setLanguage(language);
+            country.addFavePhrase(phrase);
+            country.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Error while saving", e);
+                        Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.i(TAG, "Favorite country and phrase save was successful!");
+                }
+            });
+
+            // Must also save the country to the user through a many-to-many relation.
+
         }
     }
 }

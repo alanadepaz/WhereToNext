@@ -6,7 +6,6 @@ plugins {
 android {
     compileSdk 32
 
-    useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.example.wheretonext"
         minSdk 29
@@ -26,6 +25,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        exclude 'project.properties'
     }
 }
 
@@ -51,6 +54,16 @@ dependencies {
     // For Google maps
     implementation "com.google.android.gms:play-services-location:20.0.0"
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
+
+    // For Google translate
+    /*
+    implementation('com.google.cloud:google-cloud-translate:1.12.0') {
+        exclude group: 'org.apache.httpcomponents'
+        exclude group: 'org.json', module: 'json'
+    }
+    annotationProcessor 'com.google.cloud:google-cloud-translate:1.12.0'
+
+     */
 
     // For swipe refresh
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
