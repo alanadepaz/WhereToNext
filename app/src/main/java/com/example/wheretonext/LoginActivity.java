@@ -31,8 +31,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (ParseUser.getCurrentUser() != null) {
-            //goMapActivity();
-            goMainActivity();
+            goMapActivity();
         }
 
         ivIcon = findViewById(R.id.ivIcon);
@@ -73,9 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 // Navigate to the feed activity if the user has signed in properly
-                //goMapActivity();
-
-                goMainActivity();
+                goMapActivity();
             }
         });
     }

@@ -24,6 +24,7 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class PhrasesActivity extends AppCompatActivity {
 
     public static final String TAG = "PhrasesActivity";
@@ -44,12 +45,16 @@ public class PhrasesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phrases);
 
+        // Grab the country name and language from the MapActivity
+        String countryName = getIntent().getExtras().getString("countryName");
+        String language = getIntent().getExtras().getString("language");
+
         rvPhrases = findViewById(R.id.rvPhrases);
         btnToFavePhrases = findViewById(R.id.btnToFavePhrases);
 
         // Initialize the array that will hold phrases and create a PhrasesAdapter
         allPhrases = new ArrayList<>();
-        adapter = new PhrasesAdapter(this, allPhrases);
+        adapter = new PhrasesAdapter(this, allPhrases, countryName, language);
 
         // Set the adapter on the recycler view
         rvPhrases.setAdapter(adapter);
@@ -65,7 +70,6 @@ public class PhrasesActivity extends AppCompatActivity {
                 goFavePhrasesActivity();
             }
         });
-
     }
 
     @Override

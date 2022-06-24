@@ -13,6 +13,7 @@ public class ParseApplication extends Application {
 
         // Register the parse model
         ParseObject.registerSubclass(Phrase.class);
+        ParseObject.registerSubclass(Country.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("18XnKbXJL3jtpUHSCLag2AXqPbxQQkxeBWtAReHX")
