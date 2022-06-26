@@ -19,6 +19,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.alana.wheretonext.BuildConfig;
 import com.alana.wheretonext.phrases.PhrasesActivity;
 import com.alana.wheretonext.login.LoginActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,6 +46,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.alana.wheretonext.R;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 // Implement OnMapReadyCallback.
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -221,15 +227,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             });
             try {
-                URL url = new URL("https://restcountries.com/v2/all?fields=name,languages");
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
+                String url = "https://restcountries.com/v2/all?fields=name,languages";
 
-                while ((line = bufferedReader.readLine()) != null) {
-                    Log.d(TAG, line);
-                    data = data + line;
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    data = response.body().string();
                 }
 
                 if (!data.isEmpty()) {
@@ -252,15 +259,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         }
                     }
 
-                    /*
-                    for (String country : countryAndLang.keySet()) {
-                        String countryName = country.toString();
-                        String langName = countryAndLang.get(country).toString();
-                        //Log.i(TAG, "Country: " + countryName + ", Lang: " + langName);
-                    }
-
-                     */
-                    // To put in alphabetical order
                     java.util.Collections.sort(countryList);
 
             } catch (MalformedURLException e) {
