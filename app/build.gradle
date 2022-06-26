@@ -7,7 +7,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.alana.wheretonext"
+        applicationId "com.example.wheretonext"
         minSdk 29
         targetSdk 32
         versionCode 1
@@ -55,14 +55,21 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:20.0.0"
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
+    // For Google translate
+    /*
+    implementation('com.google.cloud:google-cloud-translate:1.12.0') {
+        exclude group: 'org.apache.httpcomponents'
+        exclude group: 'org.json', module: 'json'
+    }
+    annotationProcessor 'com.google.cloud:google-cloud-translate:1.12.0'
+
+     */
+
     // For swipe refresh
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     // For parceling
     implementation 'org.parceler:parceler-api:1.1.12'
     annotationProcessor 'org.parceler:parceler:1.1.12'
-
-    // For OkHTTP
-    implementation "com.squareup.okhttp3:okhttp:4.9.1"
 
 }
