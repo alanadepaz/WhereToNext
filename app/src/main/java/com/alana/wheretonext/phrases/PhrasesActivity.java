@@ -16,7 +16,9 @@ import android.view.View;
 import android.widget.Button;
 
 import com.alana.wheretonext.login.LoginActivity;
+import com.alana.wheretonext.map.MapActivity;
 import com.alana.wheretonext.models.Phrase;
+import com.alana.wheretonext.network.TranslationClient;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -57,6 +59,9 @@ public class PhrasesActivity extends AppCompatActivity {
 
         // Initialize the array that will hold phrases and create a PhrasesAdapter
         allPhrases = new ArrayList<>();
+
+        // Grab the translations
+        new fetchData().start();
         adapter = new PhrasesAdapter(this, allPhrases, countryName, language);
 
         // Set the adapter on the recycler view
@@ -124,5 +129,20 @@ public class PhrasesActivity extends AppCompatActivity {
     private void goFavePhrasesActivity() {
         Intent i = new Intent(this, FavoritePhrasesActivity.class);
         startActivity(i);
+    }
+
+    // Fetches the data from the RESTCountries API
+    class fetchData extends Thread {
+
+        String data = "";
+
+        @Override
+        public void run() {
+            super.run();
+
+            // Grab all translations
+            String translatedText = TranslationClient.getTranslation("Hello");
+            Log.d(TAG, "Translation: " + translatedText);
+        }
     }
 }
