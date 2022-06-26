@@ -1,4 +1,4 @@
-package com.example.wheretonext;
+package com.alana.wheretonext;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.wheretonext", appContext.getPackageName());
+        assertEquals("com.alana.wheretonext", appContext.getPackageName());
     }
 }

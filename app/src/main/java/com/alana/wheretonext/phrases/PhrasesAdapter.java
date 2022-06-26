@@ -1,7 +1,6 @@
-package com.example.wheretonext;
+package com.alana.wheretonext.phrases;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +12,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alana.wheretonext.models.Country;
+import com.alana.wheretonext.models.Phrase;
 import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseRelation;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.List;
+
+import com.alana.wheretonext.R;
 
 public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHolder> {
 

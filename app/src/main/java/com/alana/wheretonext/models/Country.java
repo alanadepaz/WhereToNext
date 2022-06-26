@@ -1,4 +1,4 @@
-package com.example.wheretonext;
+package com.alana.wheretonext.models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;

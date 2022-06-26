@@ -1,22 +1,6 @@
-package com.example.wheretonext;
+package com.alana.wheretonext;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.StrictMode;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 
 /*
 import com.google.auth.oauth2.GoogleCredentials;
@@ -26,20 +10,6 @@ import com.google.cloud.translate.Translation;
 import com.parse.ParseUser;
 
  */
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.Array;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 

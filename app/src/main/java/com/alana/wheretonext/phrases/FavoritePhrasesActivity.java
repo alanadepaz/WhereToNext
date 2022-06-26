@@ -1,4 +1,4 @@
-package com.example.wheretonext;
+package com.alana.wheretonext.phrases;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.alana.wheretonext.login.LoginActivity;
 import com.parse.ParseUser;
+
+import com.alana.wheretonext.R;
 
 public class FavoritePhrasesActivity extends AppCompatActivity {
 

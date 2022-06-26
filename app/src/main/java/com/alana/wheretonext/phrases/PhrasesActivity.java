@@ -1,4 +1,4 @@
-package com.example.wheretonext;
+package com.alana.wheretonext.phrases;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,8 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
+import com.alana.wheretonext.login.LoginActivity;
+import com.alana.wheretonext.models.Phrase;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -23,6 +24,8 @@ import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alana.wheretonext.R;
 
 
 public class PhrasesActivity extends AppCompatActivity {

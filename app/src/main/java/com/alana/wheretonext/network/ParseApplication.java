@@ -1,7 +1,9 @@
-package com.example.wheretonext;
+package com.alana.wheretonext.network;
 
 import android.app.Application;
 
+import com.alana.wheretonext.models.Country;
+import com.alana.wheretonext.models.Phrase;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
