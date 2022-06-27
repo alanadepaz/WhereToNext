@@ -8,6 +8,10 @@ import java.net.URL;
 
 import com.alana.wheretonext.BuildConfig;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -16,7 +20,7 @@ import okhttp3.Response;
 
 public class TranslationClient {
 
-    public static String getTranslation(String textToTranslate) {
+    public static String getTranslation(String textToTranslate, String languageToTranslateTo) {
         String translationResponse = "";
 
         String url = "https://translation.googleapis.com/language/translate/v2?key=" + BuildConfig.GOOGLE_API_KEY;
@@ -26,8 +30,7 @@ public class TranslationClient {
 
         OkHttpClient client = new OkHttpClient();
 
-        // TODO: CHANGE THE LANGUAGE SO IT'S NOT HARDCODED
-        String requestBody = "{'q': '" + textToTranslate + "', 'target': 'es'}";
+        String requestBody = "{'q': '" + textToTranslate + "', 'target': '" + languageToTranslateTo + "'}";
 
         RequestBody body = RequestBody.create(requestBody, JSON);
         Request request = new Request.Builder()
