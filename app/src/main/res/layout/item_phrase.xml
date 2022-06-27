@@ -5,16 +5,29 @@
     android:layout_height="100dp">
 
     <TextView
-        android:id="@+id/tvPhrase"
+        android:id="@+id/tvTranslatedText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:textSize="20sp"
-        android:layout_centerVertical="true"
         tools:layout_editor_absoluteX="107dp"
         tools:layout_editor_absoluteY="129dp"
+        tools:text="Hola" />
+
+    <TextView
+        android:id="@+id/tvPhrase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvTranslatedText"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="15sp"
         tools:text="Hello" />
 
     <Button
@@ -27,4 +40,5 @@
         android:layout_marginBottom="10dp"
         android:layout_centerVertical="true"
         android:text="Favorite" />
+
 </RelativeLayout>

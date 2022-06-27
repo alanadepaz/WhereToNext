@@ -33,11 +33,14 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
     private String countryName;
     private String language;
 
-    public PhrasesAdapter(Context context, List<Phrase> phrases, String countryName, String language) {
+    private List<String> translations;
+
+    public PhrasesAdapter(Context context, List<Phrase> phrases, String countryName, String language, List<String> translations) {
         this.context = context;
         this.phrases = phrases;
         this.countryName = countryName;
         this.language = language;
+        this.translations = translations;
     }
 
     @NonNull
@@ -50,7 +53,9 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Phrase phrase = phrases.get(position);
-        holder.bind(phrase);
+        //holder.bind(phrase);
+        String translation = translations.get(position);
+        holder.bind(phrase, translation);
     }
 
     @Override
@@ -58,19 +63,26 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
         return phrases.size();
     }
 
+    public List<Phrase> getPhrases() {
+        return phrases;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        public TextView tvTranslatedText;
         public TextView tvPhrase;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvTranslatedText = itemView.findViewById(R.id.tvTranslatedText);
             tvPhrase = itemView.findViewById(R.id.tvPhrase);
             btnFavePhrase = itemView.findViewById(R.id.btnFavePhrase);
         }
 
-        public void bind(Phrase phrase) {
+        public void bind(Phrase phrase, String translation) {
             // Bind the post data to the view elements
             tvPhrase.setText(phrase.getPhrase());
+            tvTranslatedText.setText(translation);
 
             btnFavePhrase.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -129,7 +141,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                 }
             });
 
-            // Must also save the country to the user through a many-to-many relation.
+            // TODO: Must also save the country to the user through a many-to-many relation.
 
         }
     }

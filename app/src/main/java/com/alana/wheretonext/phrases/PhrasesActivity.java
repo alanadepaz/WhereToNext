@@ -24,10 +24,16 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.alana.wheretonext.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class PhrasesActivity extends AppCompatActivity {
@@ -39,7 +45,13 @@ public class PhrasesActivity extends AppCompatActivity {
     private Button btnToFavePhrases;
     protected PhrasesAdapter adapter;
     protected List<Phrase> allPhrases;
+
+    // Initialize the array that will hold the translations
+    protected List<String> allTranslations = Collections.synchronizedList(new ArrayList<String>());
     private SwipeRefreshLayout swipeContainer;
+
+    private String countryName;
+    private String language;
 
     public PhrasesActivity() {
         // Required empty public constructor
@@ -51,8 +63,8 @@ public class PhrasesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_phrases);
 
         // Grab the country name and language from the MapActivity
-        String countryName = getIntent().getExtras().getString("countryName");
-        String language = getIntent().getExtras().getString("language");
+        countryName = getIntent().getExtras().getString("countryName");
+        language = getIntent().getExtras().getString("language");
 
         rvPhrases = findViewById(R.id.rvPhrases);
         btnToFavePhrases = findViewById(R.id.btnToFavePhrases);
@@ -60,9 +72,7 @@ public class PhrasesActivity extends AppCompatActivity {
         // Initialize the array that will hold phrases and create a PhrasesAdapter
         allPhrases = new ArrayList<>();
 
-        // Grab the translations
-        new fetchData().start();
-        adapter = new PhrasesAdapter(this, allPhrases, countryName, language);
+        adapter = new PhrasesAdapter(this, allPhrases, countryName, language, allTranslations);
 
         // Set the adapter on the recycler view
         rvPhrases.setAdapter(adapter);
@@ -70,6 +80,7 @@ public class PhrasesActivity extends AppCompatActivity {
         rvPhrases.setLayoutManager(new LinearLayoutManager(this));
         // Query phrases from Parse
         queryPhrases();
+
 
         btnToFavePhrases.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,9 +132,25 @@ public class PhrasesActivity extends AppCompatActivity {
                     Log.i(TAG, "Phrase: " + phrase.getPhrase());
                 }
                 allPhrases.addAll(phrases);
+
+                // Grab the translations
+                try {
+                    notifyPhrases();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void notifyPhrases() throws InterruptedException {
+        FetchData fetchData = new FetchData();
+        Thread thread = new Thread(fetchData);
+        thread.start();
+        thread.join();
+        allTranslations = fetchData.getTranslations();
     }
 
     private void goFavePhrasesActivity() {
@@ -131,18 +158,45 @@ public class PhrasesActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    // Fetches the data from the RESTCountries API
-    class fetchData extends Thread {
+    // Fetches the data from the Cloud Translation API
+    class FetchData implements Runnable {
 
         String data = "";
+        PhrasesActivity phrasesActivity;
+
+        public FetchData(PhrasesActivity phrasesActivity) {
+            this.phrasesActivity = phrasesActivity;
+        }
+
+        public FetchData() {
+            // Required empty constructor
+        }
 
         @Override
         public void run() {
-            super.run();
+            //super.run();
 
-            // Grab all translations
-            String translatedText = TranslationClient.getTranslation("Hello");
-            Log.d(TAG, "Translation: " + translatedText);
+            for (Phrase phrase : allPhrases) {
+                // Grab all translations
+                String translation = TranslationClient.getTranslation(phrase.getPhrase(), language);
+                String translatedText = "";
+                try {
+                    JSONObject translationObject = new JSONObject(translation);
+                    JSONObject data = translationObject.getJSONObject("data");
+                    JSONArray translations = data.getJSONArray("translations");
+                    JSONObject textAndSourceLanguage = translations.getJSONObject(0);
+                    translatedText = textAndSourceLanguage.getString("translatedText");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, "Translation: " + translatedText);
+                allTranslations.add(translatedText);
+            }
+        }
+
+        public List<String> getTranslations() {
+            return allTranslations;
         }
     }
 }
