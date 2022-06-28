@@ -3,12 +3,14 @@ package com.alana.wheretonext.models;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseRelation;
+import com.parse.ParseUser;
 
 @ParseClassName("Country")
 public class Country extends ParseObject {
     public static final String KEY_COUNTRY_NAME = "countryName";
     public static final String KEY_LANGUAGE = "language";
     public static final String KEY_FAVORITE_PHRASES = "favoritePhrases";
+    public static final String KEY_USER_THAT_FAVORITED = "userThatFavorited";
 
     public Country() {
         // Required empty constructor
@@ -32,5 +34,13 @@ public class Country extends ParseObject {
     public void removeFavePhrase(Phrase favePhrase) {
         getFavePhrasesRelation().remove(favePhrase);
         saveInBackground();
+    }
+
+    public String getUserThatFavorited() { return getString(KEY_USER_THAT_FAVORITED); }
+
+    public void setUserThatFavorited(ParseUser userThatFavorited) { put(KEY_USER_THAT_FAVORITED, userThatFavorited); }
+
+    public ParseUser getUser() {
+        return getParseUser(KEY_USER_THAT_FAVORITED);
     }
 }

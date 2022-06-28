@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.alana.wheretonext.login.LoginActivity;
 import com.alana.wheretonext.map.MapActivity;
@@ -34,6 +35,7 @@ import com.alana.wheretonext.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 
 public class PhrasesActivity extends AppCompatActivity {
@@ -42,6 +44,7 @@ public class PhrasesActivity extends AppCompatActivity {
 
     private Context context;
     private RecyclerView rvPhrases;
+    private TextView tvCountryName;
     private Button btnToFavePhrases;
     protected PhrasesAdapter adapter;
     protected List<Phrase> allPhrases;
@@ -65,6 +68,9 @@ public class PhrasesActivity extends AppCompatActivity {
         // Grab the country name and language from the MapActivity
         countryName = getIntent().getExtras().getString("countryName");
         language = getIntent().getExtras().getString("language");
+
+        tvCountryName = findViewById(R.id.tvCountryName);
+        tvCountryName.setText(countryName);
 
         rvPhrases = findViewById(R.id.rvPhrases);
         btnToFavePhrases = findViewById(R.id.btnToFavePhrases);
