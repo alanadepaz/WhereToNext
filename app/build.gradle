@@ -65,4 +65,6 @@ dependencies {
     // For connecting to the network
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
 
+    // For creating sections for my favorite phrases
+    implementation 'com.github.luizgrp:SectionedRecyclerViewAdapter:v3.2.0'
 }

@@ -56,7 +56,6 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Phrase phrase = phrases.get(position);
-        //holder.bind(phrase);
         String translation = translations.get(position);
         holder.bind(phrase, translation);
     }
