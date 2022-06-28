@@ -13,10 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alana.wheretonext.models.Country;
+import com.alana.wheretonext.models.FavoritePhrase;
 import com.alana.wheretonext.models.Phrase;
 import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.List;
@@ -87,62 +90,27 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             btnFavePhrase.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(view.getContext(),"Phrase favorited!", Toast.LENGTH_LONG).show();
-                    favoritePhrase(phrase);
+                    favoritePhrase(ParseUser.getCurrentUser(), countryName, language, phrase);
                 }
             });
         }
 
-        private void favoritePhrase(Phrase phrase)
-        {
-            ParseQuery<Country> query = ParseQuery.getQuery(Country.class);
-
-            query.whereEqualTo(Country.KEY_COUNTRY_NAME, countryName);
-            query.getFirstInBackground(new GetCallback<Country>() {
+        private void favoritePhrase(ParseUser currentUser, String countryName, String languageCode, Phrase phrase) {
+            FavoritePhrase favePhrase = new FavoritePhrase();
+            favePhrase.setUser(currentUser);
+            favePhrase.setCountryName(countryName);
+            favePhrase.setLanguageCode(languageCode);
+            favePhrase.setFavoritePhrase(phrase);
+            favePhrase.saveInBackground(new SaveCallback() {
                 @Override
-                public void done(Country country, ParseException e) {
-                    if (e == null) {
-                        // Country exists. Simply add phrase.
-                        country.addFavePhrase(phrase);
-                        country.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e != null) {
-                                    Log.e(TAG, "Error while saving", e);
-                                    Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
-                                }
-                                Log.i(TAG, "Favorite country and phrase save was successful!");
-                            }
-                        });
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Error while saving", e);
+                        Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
                     }
-                    else {
-                        if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                            // Country doesn't exist. Create a new country.
-                            // Save the phrase to a country
-                            country = new Country();
-                            country.setCountryName(countryName);
-                            country.setLanguage(language);
-                            country.addFavePhrase(phrase);
-                            country.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    if (e != null) {
-                                        Log.e(TAG, "Error while saving", e);
-                                        Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
-                                    }
-                                    Log.i(TAG, "Favorite country and phrase save was successful!");
-                                }
-                            });
-                        }
-                        else {
-                            Log.e(TAG, "Unknown error!");
-                        }
-                    }
+                    Log.i(TAG, "Post save was successful!");
                 }
             });
-
-            // TODO: Must also save the country to the user through a many-to-many relation.
-
         }
     }
 }
