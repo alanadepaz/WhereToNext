@@ -1,6 +1,7 @@
 package com.alana.wheretonext.models;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -29,7 +30,14 @@ public class FavoritePhrase extends ParseObject {
 
     public void setLanguageCode(String languageCode) { put(KEY_LANGUAGE_CODE, languageCode); }
 
-    public ParseObject getFavoritePhrase() { return getParseObject(KEY_FAVORITE_PHRASE); }
+    public Phrase getFavoritePhrase() {
+        try {
+            return getParseObject(KEY_FAVORITE_PHRASE).fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public void setFavoritePhrase(ParseObject favoritePhrase) { put(KEY_FAVORITE_PHRASE, favoritePhrase); }
 
