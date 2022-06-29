@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alana.wheretonext.login.LoginActivity;
+import com.alana.wheretonext.models.CountrySection;
 import com.alana.wheretonext.models.FavoritePhrase;
 import com.alana.wheretonext.models.Phrase;
 import com.alana.wheretonext.network.TranslationClient;
@@ -28,14 +29,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 public class FavoritePhrasesActivity extends AppCompatActivity {
 
     public static final String TAG = "FavoritePhrasesActivity";
     private RecyclerView rvFavePhrases;
     protected List<FavoritePhrase> allFavePhrases;
-    protected FavoritePhrasesAdapter adapter;
+    //protected FavoritePhrasesAdapter adapter;
+    SectionedRecyclerViewAdapter sectionAdapter = new SectionedRecyclerViewAdapter();
 
     protected List<String> allFaveTranslations = Collections.synchronizedList(new ArrayList<String>());
 
@@ -49,10 +55,12 @@ public class FavoritePhrasesActivity extends AppCompatActivity {
 
         allFavePhrases = new ArrayList<>();
 
-        adapter = new FavoritePhrasesAdapter(this, allFavePhrases, allFaveTranslations);
+        //adapter = new FavoritePhrasesAdapter(this, allFavePhrases, allFaveTranslations);
 
         // Set the adapter on the recycler view
-        rvFavePhrases.setAdapter(adapter);
+        //rvFavePhrases.setAdapter(adapter);
+
+        rvFavePhrases.setAdapter(sectionAdapter);
         // Set the layout manager on the recycler view
         rvFavePhrases.setLayoutManager(new LinearLayoutManager(this));
         // Query phrases from Parse
@@ -80,6 +88,7 @@ public class FavoritePhrasesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    String favePhraseCountry = "";
     protected void queryPhrases() {
         // Specify which class to query
         ParseQuery<FavoritePhrase> query = ParseQuery.getQuery(FavoritePhrase.class);
@@ -88,6 +97,8 @@ public class FavoritePhrasesActivity extends AppCompatActivity {
         // Get all the favorite phrases from one user
         query.whereEqualTo(FavoritePhrase.KEY_USER,ParseUser.getCurrentUser());
         query.orderByAscending("countryName");
+
+        Map<String, ArrayList<FavoritePhrase>> phrasesPerCountry = new HashMap<>();
 
         query.findInBackground(new FindCallback<FavoritePhrase>() {
             @Override
@@ -98,7 +109,16 @@ public class FavoritePhrasesActivity extends AppCompatActivity {
                 }
                 for (FavoritePhrase favePhrase : favePhrases) {
                     Log.i(TAG, "Fave Phrase: " + favePhrase.getFavoritePhrase());
+
+                    // Country has not already been added to the Map
+                    if (!favePhrase.getCountryName().equals(favePhraseCountry)) {
+                        favePhraseCountry = favePhrase.getCountryName();
+                        //phrasesPerCountry.put(favePhraseCountry, new ArrayList<>());
+                        sectionAdapter.addSection(new CountrySection(allFavePhrases, allFaveTranslations, favePhraseCountry));
+                    }
+                    //phrasesPerCountry.get(favePhraseCountry).add(favePhrase);
                 }
+
                 allFavePhrases.addAll(favePhrases);
 
                 // Grab the translations
@@ -108,7 +128,8 @@ public class FavoritePhrasesActivity extends AppCompatActivity {
                     ex.printStackTrace();
                 }
 
-                adapter.notifyDataSetChanged();
+                //adapter.notifyDataSetChanged();
+                sectionAdapter.notifyDataSetChanged();
             }
         });
     }
