@@ -2,6 +2,7 @@ package com.alana.wheretonext.phrases;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +13,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alana.wheretonext.models.Country;
 import com.alana.wheretonext.models.FavoritePhrase;
 import com.alana.wheretonext.models.Phrase;
-import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.alana.wheretonext.R;
 
@@ -85,6 +83,15 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             // Bind the post data to the view elements
             tvPhrase.setText(phrase.getPhrase());
             tvTranslatedText.setText(translation);
+
+            // If the language of the country to travel to is the same as the one the user speaks
+
+            if (language == null || Locale.getDefault().getLanguage().equals(language)) {
+                tvTranslatedText.setText(phrase.getPhrase());
+                tvPhrase.setVisibility(View.GONE);
+                tvTranslatedText.setTextSize(20);
+                tvTranslatedText.setGravity(Gravity.CENTER_VERTICAL);
+            }
 
             btnFavePhrase.setOnClickListener(new View.OnClickListener() {
                 @Override

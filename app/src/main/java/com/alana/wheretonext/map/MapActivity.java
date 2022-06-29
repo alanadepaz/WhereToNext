@@ -247,6 +247,28 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     for (int i = 0; i < countries.length(); i++) {
                         JSONObject country = countries.getJSONObject(i);
                         String countryName = country.getString("name");
+
+                        // Handling some exceptions in the database
+                        if (countryName.equals("Russian Federation")) {
+                            countryName = "Russia";
+                        }
+                        if (countryName.equals("Bolivia (Plurinational State of)")) {
+                            countryName = "Bolivia";
+                        }
+                        if (countryName.equals("Congo (Democratic Republic of the)")) {
+                            countryName = "Republic of the Congo";
+                        }
+                        if (countryName.equals("Iran (Islamic Republic of)")) {
+                            countryName = "Iran";
+                        }
+                        if (countryName.equals("Korea (Democratic People's Republic of)")) {
+                            countryName = "North Korea";
+                        }
+                        if (countryName.equals("Korea (Republic of)")) {
+                            countryName = "South Korea";
+                        }
+
+
                         countryList.add(countryName);
 
                         JSONArray languages = country.getJSONArray("languages");
@@ -254,7 +276,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         // Grab the first language listed, as it is the most spoken OR official language
                         String language = languages.getJSONObject(0).getString("iso639_1");
 
-                        Log.i(TAG, "Country: " + countryName + ", Language: " + language);
+                        //Log.i(TAG, "Country: " + countryName + ", Language: " + language);
                         countryAndLang.put(countryName, language);
                         }
                     }

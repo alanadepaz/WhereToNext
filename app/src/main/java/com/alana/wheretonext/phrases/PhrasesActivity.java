@@ -64,7 +64,10 @@ public class PhrasesActivity extends AppCompatActivity {
 
         // Grab the country name and language from the MapActivity
         countryName = getIntent().getExtras().getString("countryName");
+
         language = getIntent().getExtras().getString("language");
+
+        Log.d(TAG, "Language: " + language);
 
         tvCountryName = findViewById(R.id.tvCountryName);
         tvCountryName.setText(countryName);
