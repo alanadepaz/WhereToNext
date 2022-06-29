@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.alana.wheretonext.login.LoginActivity;
-import com.alana.wheretonext.map.MapActivity;
 import com.alana.wheretonext.models.Phrase;
 import com.alana.wheretonext.network.TranslationClient;
 import com.parse.FindCallback;
@@ -25,7 +24,6 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +33,6 @@ import com.alana.wheretonext.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 
 public class PhrasesActivity extends AppCompatActivity {

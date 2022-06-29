@@ -24,7 +24,6 @@ public class TranslationClient {
         String translationResponse = "";
 
         String url = "https://translation.googleapis.com/language/translate/v2?key=" + BuildConfig.GOOGLE_API_KEY;
-        Log.d("TranslationClient", url);
         final MediaType JSON
                 = MediaType.get("application/json; charset=utf-8");
 
