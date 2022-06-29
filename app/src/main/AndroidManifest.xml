@@ -21,9 +21,6 @@
             android:name=".phrases.FavoritePhrasesActivity"
             android:exported="false" />
         <activity
-            android:name=".phrases.FavoritePhrases2Activity"
-            android:exported="false" />
-        <activity
             android:name=".phrases.PhrasesActivity"
             android:exported="false" />
         <activity
