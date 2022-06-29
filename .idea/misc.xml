@@ -6,11 +6,13 @@
         <entry key="../../../../layout/custom_preview.xml" value="0.13179347826086957" />
         <entry key="app/src/main/res/drawable/white_border.xml" value="0.1425" />
         <entry key="app/src/main/res/layout/activity_favorite_phrases.xml" value="0.3299499511718751" />
+        <entry key="app/src/main/res/layout/activity_favorite_phrases2.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.13596954345703122" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_map.xml" value="0.20224719101123595" />
         <entry key="app/src/main/res/layout/activity_phrases.xml" value="0.21113128662109376" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_favorite_phrases.xml" value="0.11005434782608696" />
         <entry key="app/src/main/res/layout/item_phrase.xml" value="0.3135618348052536" />
         <entry key="app/src/main/res/layout/section_header.xml" value="0.15353260869565216" />
         <entry key="app/src/main/res/menu/menu_main.xml" value="0.17135416666666667" />

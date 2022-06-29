@@ -1,5 +1,6 @@
 package com.alana.wheretonext.models;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,11 +18,12 @@ import com.alana.wheretonext.R;
 
 public class CountrySection extends Section {
 
+    public static final String TAG = "CountrySection";
     private List<FavoritePhrase> favePhrasesList;
     private List<String> translations;
     private String countryName;
 
-    public CountrySection(@NonNull List<FavoritePhrase> favePhrasesList, List<String> translations, @NonNull String countryName) {
+    public CountrySection(@NonNull String countryName, @NonNull List<FavoritePhrase> favePhrasesList, List<String> translations) {
         super(SectionParameters.builder()
                 .itemResourceId(R.layout.item_phrase)
                 .headerResourceId(R.layout.section_header)
@@ -49,6 +51,7 @@ public class CountrySection extends Section {
 
         FavoritePhrase favePhrase = favePhrasesList.get(position);
         String translation = translations.get(position);
+        Log.d(TAG, "Translation before bind: " + translation);
         ((FavePhraseViewHolder) holder).bind(favePhrase, translation);
     }
 
@@ -82,6 +85,7 @@ public class CountrySection extends Section {
             // Bind the post data to the view elements
             tvPhrase.setText(favePhrase.getFavoritePhrase().getPhrase());
             tvTranslatedText.setText(translation);
+            Log.d(TAG, "Set text to: " + translation);
 
             btnFavePhrase.setOnClickListener(new View.OnClickListener() {
                 @Override
