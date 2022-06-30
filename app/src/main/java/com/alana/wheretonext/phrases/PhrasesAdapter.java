@@ -1,21 +1,29 @@
 package com.alana.wheretonext.phrases;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alana.wheretonext.models.FavoritePhrase;
 import com.alana.wheretonext.models.Phrase;
+import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -29,12 +37,13 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
     public static final String TAG = "PhrasesAdapter";
     private Context context;
     private List<Phrase> phrases;
-    private Button btnFavePhrase;
+    private ToggleButton btnFavePhrase;
 
     private String countryName;
     private String language;
 
     private List<String> translations;
+
 
     public PhrasesAdapter(Context context, List<Phrase> phrases, String countryName, String language, List<String> translations) {
         this.context = context;
@@ -48,6 +57,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_phrase, parent, false);
+
         return new ViewHolder(view);
     }
 
@@ -85,7 +95,6 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             tvTranslatedText.setText(translation);
 
             // If the language of the country to travel to is the same as the one the user speaks
-
             if (language == null || Locale.getDefault().getLanguage().equals(language)) {
                 tvTranslatedText.setText(phrase.getPhrase());
                 tvPhrase.setVisibility(View.GONE);
@@ -93,10 +102,29 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                 tvTranslatedText.setGravity(Gravity.CENTER_VERTICAL);
             }
 
-            btnFavePhrase.setOnClickListener(new View.OnClickListener() {
+            SharedPreferences sharedPrefs = context.getSharedPreferences("com.alana.wheretonext", Context.MODE_PRIVATE);
+            btnFavePhrase.setChecked(sharedPrefs.getBoolean(phrase.getPhrase() + countryName, false));
+
+            btnFavePhrase.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onClick(View view) {
-                    favoritePhrase(ParseUser.getCurrentUser(), countryName, language, phrase);
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked)
+                    {
+                        SharedPreferences.Editor editor = context.getSharedPreferences("com.alana.wheretonext", MODE_PRIVATE).edit();
+                        editor.putBoolean(phrase.getPhrase() + countryName, true);
+                        editor.commit();
+
+                        favoritePhrase(ParseUser.getCurrentUser(), countryName, language, phrase);
+                    }
+                    else
+                    {
+                        SharedPreferences.Editor editor = context.getSharedPreferences("com.alana.wheretonext", MODE_PRIVATE).edit();
+                        editor.putBoolean(phrase.getPhrase() + countryName, false);
+                        editor.commit();
+
+                        unFavoritePhrase(ParseUser.getCurrentUser(), countryName, phrase);
+                    }
+                    Log.d(TAG, String.valueOf(sharedPrefs.getBoolean(phrase.getPhrase() + countryName, false)));
                 }
             });
         }
@@ -107,6 +135,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             favePhrase.setCountryName(countryName);
             favePhrase.setLanguageCode(languageCode);
             favePhrase.setFavoritePhrase(phrase);
+
             favePhrase.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -115,6 +144,31 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                         Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
                     }
                     Log.i(TAG, "Post save was successful!");
+                }
+            });
+        }
+
+        private void unFavoritePhrase(ParseUser currentUser, String countryName, Phrase phrase) {
+            ParseQuery<FavoritePhrase> query = ParseQuery.getQuery("FavoritePhrase");
+            query.whereEqualTo("user", currentUser);
+            query.whereEqualTo("countryName", countryName);
+            query.whereEqualTo("favoritePhrase", phrase);
+            query.findInBackground(new FindCallback<FavoritePhrase>() {
+                @Override
+                public void done(List<FavoritePhrase> objects, ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Issue with getting phrases", e);
+                        return;
+                    }
+
+                    for (FavoritePhrase phraseToUnfavorite : objects) {
+                        try {
+                            phraseToUnfavorite.delete();
+                        } catch (ParseException ex) {
+                            ex.printStackTrace();
+                        }
+                        phraseToUnfavorite.saveInBackground();
+                    }
                 }
             });
         }

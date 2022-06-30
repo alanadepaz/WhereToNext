@@ -2,15 +2,7 @@ package com.alana.wheretonext;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-/*
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.translate.Translate;
-import com.google.cloud.translate.TranslateOptions;
-import com.google.cloud.translate.Translation;
-import com.parse.ParseUser;
-
- */
-
+//TODO: DELETE THIS CLASS WHEN DONE
 public class MainActivity extends AppCompatActivity {
 
     /*

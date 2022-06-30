@@ -15,6 +15,10 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.utils.EmptyViewHolder;
 
 import com.alana.wheretonext.R;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 public class CountrySection extends Section {
 
@@ -51,7 +55,6 @@ public class CountrySection extends Section {
 
         FavoritePhrase favePhrase = favePhrasesList.get(position);
         String translation = translations.get(position);
-        Log.d(TAG, "Translation before bind: " + translation);
         ((FavePhraseViewHolder) holder).bind(favePhrase, translation);
     }
 
@@ -85,18 +88,38 @@ public class CountrySection extends Section {
             // Bind the post data to the view elements
             tvPhrase.setText(favePhrase.getFavoritePhrase().getPhrase());
             tvTranslatedText.setText(translation);
-            Log.d(TAG, "Set text to: " + translation);
 
             btnFavePhrase.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    unFavoritePhrase();
+                    unFavoritePhrase(ParseUser.getCurrentUser(), countryName, favePhrase.getFavoritePhrase());
                 }
             });
         }
 
-        private void unFavoritePhrase() {
+        private void unFavoritePhrase(ParseUser currentUser, String countryName, Phrase phrase) {
+            ParseQuery<FavoritePhrase> query = ParseQuery.getQuery("FavoritePhrase");
+            query.whereEqualTo("user", currentUser);
+            query.whereEqualTo("countryName", countryName);
+            query.whereEqualTo("favoritePhrase", phrase);
+            query.findInBackground(new FindCallback<FavoritePhrase>() {
+                @Override
+                public void done(List<FavoritePhrase> objects, ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Issue with getting phrases", e);
+                        return;
+                    }
 
+                    for (FavoritePhrase phraseToUnfavorite : objects) {
+                        try {
+                            phraseToUnfavorite.delete();
+                        } catch (ParseException ex) {
+                            ex.printStackTrace();
+                        }
+                        phraseToUnfavorite.saveInBackground();
+                    }
+                }
+            });
         }
     }
 

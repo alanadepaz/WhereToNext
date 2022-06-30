@@ -4,6 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.13179347826086957" />
+        <entry key="app/src/main/res/drawable-v24/star_shooting.xml" value="0.175" />
+        <entry key="app/src/main/res/drawable-v24/star_shooting_outline.xml" value="0.175" />
+        <entry key="app/src/main/res/drawable/toggle_selector.xml" value="0.174" />
         <entry key="app/src/main/res/drawable/white_border.xml" value="0.1425" />
         <entry key="app/src/main/res/layout/activity_favorite_phrases.xml" value="0.3299499511718751" />
         <entry key="app/src/main/res/layout/activity_favorite_phrases2.xml" value="0.1" />
