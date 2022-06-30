@@ -120,7 +120,6 @@ public class FavoritePhrasesActivity extends AppCompatActivity {
                 for (final Map.Entry<String, List<FavoritePhrase>> entry : favoritePhrasesMap.entrySet()) {
                     if (entry.getValue().size() > 0) {
 
-                        //TODO: get the translations just for the phrases i'm populating by country. entry.getValue() is my phrases.
                         filteredFavePhrases = entry.getValue();
                         List<String> filteredTranslations = favoriteTranslationsMap.get(entry.getKey());
 
