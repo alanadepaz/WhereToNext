@@ -8,7 +8,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -96,6 +98,8 @@ public class PhrasesActivity extends AppCompatActivity {
             }
         });
     }
+
+    // TODO: update sharedPrefs onResume(), and then also query the data again to know if something is favorited
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
