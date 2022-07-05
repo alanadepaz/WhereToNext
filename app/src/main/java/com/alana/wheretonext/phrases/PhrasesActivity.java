@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alana.wheretonext.login.LoginActivity;
+import com.alana.wheretonext.models.CountrySection;
+import com.alana.wheretonext.models.FavoritePhrase;
 import com.alana.wheretonext.models.Phrase;
 import com.alana.wheretonext.network.TranslationClient;
 import com.parse.FindCallback;
@@ -29,7 +32,10 @@ import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alana.wheretonext.R;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -37,6 +43,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 
 public class PhrasesActivity extends AppCompatActivity {
@@ -46,7 +54,7 @@ public class PhrasesActivity extends AppCompatActivity {
     private Context context;
     private RecyclerView rvPhrases;
     private TextView tvCountryName;
-    private Button btnToFavePhrases;
+    //private Button btnToFavePhrases;
     protected PhrasesAdapter adapter;
     protected List<Phrase> allPhrases;
 
@@ -56,6 +64,15 @@ public class PhrasesActivity extends AppCompatActivity {
 
     private String countryName;
     private String language;
+
+    // FOR FAVORITE PHRASES PANEL
+    private RecyclerView rvFavePhrases;
+    protected List<FavoritePhrase> allFavePhrases;
+    private SectionedRecyclerViewAdapter sectionedAdapter;
+
+    protected List<FavoritePhrase> filteredFavePhrases;
+
+    private Map<String, List<String>> favoriteTranslationsMap;  // Map needed for favorite translations and association with country
 
     public PhrasesActivity() {
         // Required empty public constructor
@@ -71,15 +88,19 @@ public class PhrasesActivity extends AppCompatActivity {
         layout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                findViewById(R.id.rvFavePhrases).setAlpha(1 - slideOffset);
+                findViewById(R.id.rvPhrases).setAlpha(1 - slideOffset);
 
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 if (newState == SlidingUpPanelLayout.PanelState.EXPANDED) {
                     Toast.makeText(PhrasesActivity.this, "Panel expanded", Toast.LENGTH_SHORT).show();
                     //goFavePhrasesActivity();
+
+                    sectionedAdapter.notifyDataSetChanged();
+                    //queryFavePhrases();
                 }
                 else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                     Toast.makeText(PhrasesActivity.this, "Panel collapsed", Toast.LENGTH_SHORT).show();
@@ -97,7 +118,7 @@ public class PhrasesActivity extends AppCompatActivity {
         tvCountryName.setText(countryName);
 
         rvPhrases = findViewById(R.id.rvPhrases);
-        btnToFavePhrases = findViewById(R.id.btnToFavePhrases);
+        //btnToFavePhrases = findViewById(R.id.btnToFavePhrases);
 
         // Initialize the array that will hold phrases and create a PhrasesAdapter
         allPhrases = new ArrayList<>();
@@ -108,10 +129,26 @@ public class PhrasesActivity extends AppCompatActivity {
         rvPhrases.setAdapter(adapter);
         // Set the layout manager on the recycler view
         rvPhrases.setLayoutManager(new LinearLayoutManager(this));
+
+        // FOR FAVORITE PHRASES PANEL
+        allFavePhrases = new ArrayList<>();
+        filteredFavePhrases = new ArrayList<>();
+        favoriteTranslationsMap = new HashMap<>();
+
+        sectionedAdapter = new SectionedRecyclerViewAdapter();
+
+        rvFavePhrases = findViewById(R.id.rvFavePhrases);
+        rvFavePhrases.setLayoutManager(new LinearLayoutManager(context));
+        rvFavePhrases.setAdapter(sectionedAdapter);
+
         // Query phrases from Parse
         queryPhrases();
 
+        // Query favorite Phrases too
+        queryFavePhrases();
 
+
+        /*
         btnToFavePhrases.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,6 +156,7 @@ public class PhrasesActivity extends AppCompatActivity {
                 goFavePhrasesActivity();
             }
         });
+         */
     }
 
     // TODO: update sharedPrefs onResume(), and then also query the data again to know if something is favorited
@@ -229,6 +267,120 @@ public class PhrasesActivity extends AppCompatActivity {
 
         public List<String> getTranslations() {
             return allTranslations;
+        }
+    }
+
+    // FOR FAVORITE PHRASES PANEL
+    protected void queryFavePhrases() {
+        // Specify which class to query
+        ParseQuery<FavoritePhrase> query = ParseQuery.getQuery(FavoritePhrase.class);
+
+        query.setLimit(20);
+        // Get all the favorite phrases from one user
+        query.whereEqualTo(FavoritePhrase.KEY_USER, ParseUser.getCurrentUser());
+        query.orderByAscending("countryName");
+
+        Map<String, ArrayList<FavoritePhrase>> phrasesPerCountry = new HashMap<>();
+
+        rvFavePhrases.removeAllViews();
+        rvFavePhrases.refreshDrawableState();
+
+        query.findInBackground(new FindCallback<FavoritePhrase>() {
+            @Override
+            public void done(List<FavoritePhrase> favePhrases, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting phrases", e);
+                    return;
+                }
+
+                allFavePhrases.addAll(favePhrases);
+
+                // Grab the translations
+                try {
+                    notifyFavePhrases();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+
+                final Map<String, List<FavoritePhrase>> favoritePhrasesMap = getFavePhrasesByCountry();
+                for (final Map.Entry<String, List<FavoritePhrase>> entry : favoritePhrasesMap.entrySet()) {
+                    if (entry.getValue().size() > 0) {
+
+                        filteredFavePhrases = entry.getValue();
+                        List<String> filteredTranslations = favoriteTranslationsMap.get(entry.getKey());
+
+                        sectionedAdapter.addSection(new CountrySection(entry.getKey(), filteredFavePhrases, filteredTranslations));
+                    }
+                }
+                //adapter.notifyDataSetChanged();
+                sectionedAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private Map<String, List<FavoritePhrase>> getFavePhrasesByCountry() {
+        final Map<String, List<FavoritePhrase>> map = new LinkedHashMap<>();
+
+        String currentCountry;
+        for (FavoritePhrase favoritePhrase : allFavePhrases) {
+            currentCountry = favoritePhrase.getCountryName();
+            List<FavoritePhrase> faveCountryPhrases = map.get(currentCountry);
+
+            if (faveCountryPhrases == null) {
+                faveCountryPhrases = new ArrayList<>();
+                map.put(currentCountry, faveCountryPhrases);
+            }
+            faveCountryPhrases.add(favoritePhrase);
+        }
+
+        return map;
+    }
+
+    private void notifyFavePhrases() throws InterruptedException {
+        FetchFaveData fetchFaveData = new FetchFaveData();
+        Thread thread = new Thread(fetchFaveData);
+        thread.start();
+        thread.join();
+        favoriteTranslationsMap = fetchFaveData.getTranslationsMap();
+    }
+
+    // Fetches the data from the Cloud Translation API
+    class FetchFaveData implements Runnable {
+
+        public FetchFaveData() {
+            // Required empty constructor
+        }
+
+        @Override
+        public void run() {
+            //super.run();
+
+            for (FavoritePhrase favePhrase : allFavePhrases) {
+                // Grab all translations
+                String translation = TranslationClient.getTranslation(favePhrase.getFavoritePhrase().getString("phrase"), favePhrase.getLanguageCode());
+                String translatedText = "";
+                try {
+                    JSONObject translationObject = new JSONObject(translation);
+                    JSONObject data = translationObject.getJSONObject("data");
+                    JSONArray translations = data.getJSONArray("translations");
+                    JSONObject textAndSourceLanguage = translations.getJSONObject(0);
+                    translatedText = textAndSourceLanguage.getString("translatedText");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                List<String> faveCountryTranslations = favoriteTranslationsMap.get(favePhrase.getCountryName());
+
+                if (faveCountryTranslations == null) {
+                    faveCountryTranslations = new ArrayList<>();
+                    favoriteTranslationsMap.put(favePhrase.getCountryName(), faveCountryTranslations);
+                }
+                faveCountryTranslations.add(translatedText);
+            }
+        }
+
+        public Map<String, List<String>> getTranslationsMap() {
+            return favoriteTranslationsMap;
         }
     }
 }

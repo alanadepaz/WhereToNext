@@ -19,14 +19,6 @@
             android:layout_marginTop="40dp"
             android:padding="8dp" />
 
-        <Button
-            android:id="@+id/btnToFavePhrases"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="10dp"
-            android:text="Go to Favorite Phrases" />
-
         <TextView
             android:id="@+id/tvCountryName"
             android:layout_width="wrap_content"
@@ -40,10 +32,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
+        <TextView
+            android:id="@+id/tvFavoritePhraseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:text="@string/favorite_phrases" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvFavePhrases"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tvFavoritePhraseTitle"
             android:layout_marginTop="10dp"
             android:padding="8dp" />
 
