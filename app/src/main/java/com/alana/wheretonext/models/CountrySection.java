@@ -1,9 +1,15 @@
 package com.alana.wheretonext.models;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,7 +18,6 @@ import java.util.List;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
-import io.github.luizgrp.sectionedrecyclerviewadapter.utils.EmptyViewHolder;
 
 import com.alana.wheretonext.R;
 import com.parse.FindCallback;
@@ -26,6 +31,8 @@ public class CountrySection extends Section {
     private List<FavoritePhrase> favePhrasesList;
     private List<String> translations;
     private String countryName;
+
+    private Context context;
 
     public CountrySection(@NonNull String countryName, @NonNull List<FavoritePhrase> favePhrasesList, List<String> translations) {
         super(SectionParameters.builder()
@@ -74,7 +81,7 @@ public class CountrySection extends Section {
 
         public TextView tvTranslatedText;
         public TextView tvPhrase;
-        public Button btnFavePhrase;
+        public ToggleButton btnFavePhrase;
 
         public FavePhraseViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,14 +92,23 @@ public class CountrySection extends Section {
         }
 
         public void bind(FavoritePhrase favePhrase, String translation) {
+            Log.d(TAG, "In favorites bind method.");
             // Bind the post data to the view elements
             tvPhrase.setText(favePhrase.getFavoritePhrase().getPhrase());
             tvTranslatedText.setText(translation);
 
-            btnFavePhrase.setOnClickListener(new View.OnClickListener() {
+            SharedPreferences sharedPrefs = itemView.getContext().getSharedPreferences("com.alana.wheretonext", Context.MODE_PRIVATE);
+            Log.d(TAG, favePhrase.getFavoritePhrase().getPhrase() + countryName);
+            btnFavePhrase.setChecked(sharedPrefs.getBoolean(favePhrase.getFavoritePhrase().getPhrase() + countryName, true));
+
+            btnFavePhrase.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onClick(View view) {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     unFavoritePhrase(ParseUser.getCurrentUser(), countryName, favePhrase.getFavoritePhrase());
+
+                    SharedPreferences.Editor editor = itemView.getContext().getSharedPreferences("com.alana.wheretonext", MODE_PRIVATE).edit();
+                    editor.putBoolean(favePhrase.getFavoritePhrase().getPhrase() + countryName, false);
+                    editor.commit();
                 }
             });
         }

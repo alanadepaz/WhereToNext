@@ -9,6 +9,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -68,6 +71,8 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
         holder.bind(phrase, translation);
     }
 
+
+
     @Override
     public int getItemCount() {
         return phrases.size();
@@ -90,6 +95,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
         }
 
         public void bind(Phrase phrase, String translation) {
+            Log.d(TAG, "In bind method");
             // Bind the post data to the view elements
             tvPhrase.setText(phrase.getPhrase());
             tvTranslatedText.setText(translation);
@@ -103,11 +109,13 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             }
 
             SharedPreferences sharedPrefs = context.getSharedPreferences("com.alana.wheretonext", Context.MODE_PRIVATE);
+            Log.d(TAG, phrase.getPhrase() + countryName);
             btnFavePhrase.setChecked(sharedPrefs.getBoolean(phrase.getPhrase() + countryName, false));
 
             btnFavePhrase.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                     if (isChecked)
                     {
                         SharedPreferences.Editor editor = context.getSharedPreferences("com.alana.wheretonext", MODE_PRIVATE).edit();

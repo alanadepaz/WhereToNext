@@ -2,7 +2,6 @@ package com.alana.wheretonext.network;
 
 import android.app.Application;
 
-import com.alana.wheretonext.models.Country;
 import com.alana.wheretonext.models.FavoritePhrase;
 import com.alana.wheretonext.models.Phrase;
 import com.parse.Parse;
@@ -16,7 +15,6 @@ public class ParseApplication extends Application {
 
         // Register the parse model
         ParseObject.registerSubclass(Phrase.class);
-        ParseObject.registerSubclass(Country.class);
         ParseObject.registerSubclass(FavoritePhrase.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
