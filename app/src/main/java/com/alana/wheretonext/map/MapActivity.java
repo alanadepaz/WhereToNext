@@ -174,7 +174,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 //Get the lat long here from variable position
                 //Use GeoCoder class to fetch the country from latlong like this
                 Geocoder geocoder = new Geocoder(MapActivity.this);
-                List<Address> addresses = null;
+                List<Address> addresses = new ArrayList<>();
                 try {
                     addresses = geocoder.getFromLocation(position.latitude, position.longitude, 1);
                 } catch (IOException e) {
@@ -193,6 +193,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     // Navigate to the phrases activity
     private void goPhrasesActivity(String countryName) {
         Intent i = new Intent(this, PhrasesActivity.class);
+        i.setAction("fromMap");
         i.putExtra("countryName", countryName);
         i.putExtra("language", countryAndLang.get(countryName));
         startActivity(i);
