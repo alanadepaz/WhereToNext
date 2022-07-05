@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alana.wheretonext.login.LoginActivity;
 import com.alana.wheretonext.models.Phrase;
@@ -31,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.alana.wheretonext.R;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,6 +66,26 @@ public class PhrasesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phrases);
 
+        SlidingUpPanelLayout layout = findViewById(R.id.slidingUp);
+
+        layout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                findViewById(R.id.rvFavePhrases).setAlpha(1 - slideOffset);
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                    Toast.makeText(PhrasesActivity.this, "Panel expanded", Toast.LENGTH_SHORT).show();
+                    //goFavePhrasesActivity();
+                }
+                else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                    Toast.makeText(PhrasesActivity.this, "Panel collapsed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         // Grab the country name and language from the MapActivity
         countryName = getIntent().getExtras().getString("countryName");
 

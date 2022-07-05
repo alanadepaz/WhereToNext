@@ -69,5 +69,5 @@ dependencies {
     implementation 'com.github.luizgrp:SectionedRecyclerViewAdapter:v3.2.0'
 
     // For sliding up panel
-    //implementation 'com.sothree.slidinguppanel:library:3.4.0'
+    implementation 'com.sothree.slidinguppanel:library:3.4.0'
 }
