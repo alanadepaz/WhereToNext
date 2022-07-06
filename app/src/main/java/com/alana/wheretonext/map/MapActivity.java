@@ -3,12 +3,10 @@ package com.alana.wheretonext.map;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -21,7 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieDrawable;
-import com.alana.wheretonext.BuildConfig;
+import com.alana.wheretonext.network.CountriesClient;
 import com.alana.wheretonext.phrases.PhrasesActivity;
 import com.alana.wheretonext.login.LoginActivity;
 import com.amrdeveloper.lottiedialog.LottieDialog;
@@ -36,13 +34,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +43,6 @@ import java.util.Map;
 
 import com.alana.wheretonext.R;
 
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -60,7 +52,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public static final String TAG = "MapActivity";
     public static final float DEFAULT_ZOOM = 4f;
-    private Button btnToPhrases;
 
     // For fetching country data
     ArrayList<String> countryList;
@@ -238,70 +229,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         public void run() {
             super.run();
 
-            try {
-                String url = "https://restcountries.com/v2/all?fields=name,languages";
+            CountriesClient.getTranslation(data, countryList, countryAndLang);
 
-                OkHttpClient client = new OkHttpClient();
-
-                Request request = new Request.Builder()
-                        .url(url)
-                        .build();
-
-                try (Response response = client.newCall(request).execute()) {
-                    data = response.body().string();
-                }
-
-                if (!data.isEmpty()) {
-                    JSONArray countries = new JSONArray(data);
-                    countryList.clear();
-                    countryAndLang.clear();
-
-                    for (int i = 0; i < countries.length(); i++) {
-                        JSONObject country = countries.getJSONObject(i);
-                        String countryName = country.getString("name");
-
-                        // Handling some exceptions in the database
-                        if (countryName.equals("Russian Federation")) {
-                            countryName = "Russia";
-                        }
-                        if (countryName.equals("Bolivia (Plurinational State of)")) {
-                            countryName = "Bolivia";
-                        }
-                        if (countryName.equals("Congo (Democratic Republic of the)")) {
-                            countryName = "Republic of the Congo";
-                        }
-                        if (countryName.equals("Iran (Islamic Republic of)")) {
-                            countryName = "Iran";
-                        }
-                        if (countryName.equals("Korea (Democratic People's Republic of)")) {
-                            countryName = "North Korea";
-                        }
-                        if (countryName.equals("Korea (Republic of)")) {
-                            countryName = "South Korea";
-                        }
-
-
-                        countryList.add(countryName);
-
-                        JSONArray languages = country.getJSONArray("languages");
-
-                        // Grab the first language listed, as it is the most spoken OR official language
-                        String language = languages.getJSONObject(0).getString("iso639_1");
-
-                        //Log.i(TAG, "Country: " + countryName + ", Language: " + language);
-                        countryAndLang.put(countryName, language);
-                    }
-                }
-
-                java.util.Collections.sort(countryList);
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -31,8 +30,6 @@ public class CountrySection extends Section {
     private List<FavoritePhrase> favePhrasesList;
     private List<String> translations;
     private String countryName;
-
-    private Context context;
 
     public CountrySection(@NonNull String countryName, @NonNull List<FavoritePhrase> favePhrasesList, List<String> translations) {
         super(SectionParameters.builder()

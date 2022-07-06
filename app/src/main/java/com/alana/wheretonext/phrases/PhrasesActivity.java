@@ -128,13 +128,13 @@ public class PhrasesActivity extends AppCompatActivity {
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 if (newState == SlidingUpPanelLayout.PanelState.EXPANDED) {
-                    Toast.makeText(PhrasesActivity.this, "Panel expanded", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(PhrasesActivity.this, "Panel expanded", Toast.LENGTH_SHORT).show();
 
                     sectionedAdapter.notifyDataSetChanged();
                     //queryFavePhrases();
                 }
                 else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                    Toast.makeText(PhrasesActivity.this, "Panel collapsed", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(PhrasesActivity.this, "Panel collapsed", Toast.LENGTH_SHORT).show();
                 }
             }
         });

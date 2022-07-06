@@ -38,7 +38,8 @@
             android:layout_height="wrap_content"
             android:textSize="30dp"
             android:textStyle="bold"
-            android:text="@string/favorite_phrases" />
+            android:text="@string/favorite_phrases"
+            android:layout_margin="10dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvFavePhrases"
