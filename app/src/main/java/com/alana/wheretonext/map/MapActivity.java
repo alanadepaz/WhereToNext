@@ -13,15 +13,18 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieDrawable;
 import com.alana.wheretonext.BuildConfig;
 import com.alana.wheretonext.phrases.PhrasesActivity;
 import com.alana.wheretonext.login.LoginActivity;
+import com.amrdeveloper.lottiedialog.LottieDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -61,12 +64,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     // For fetching country data
     ArrayList<String> countryList;
-    Map<String,String> countryAndLang = new HashMap<>();
+    Map<String, String> countryAndLang = new HashMap<>();
     ArrayAdapter<String> listAdapter;
-    Handler mainHandler = new Handler();
-    ProgressDialog progressDialog;
-
-
 
     // Widgets
     private AutoCompleteTextView mSearchText;
@@ -88,6 +87,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // For fetching country data for the search
         new fetchData().start();
         initializeCountryList(mSearchText);
+
+        Button btnExitDialog = new Button(this);
+
+        LottieDialog welcomeDialog = new LottieDialog(this)
+                .setAnimation(R.raw.yellow_passport_anim)
+                .setAnimationRepeatCount(LottieDrawable.INFINITE)
+                .setAutoPlayAnimation(true)
+                .setMessage("Explore countries of interest and learn the phrases you need to know before you go! You ready?")
+                .addActionButton(btnExitDialog);
+
+        welcomeDialog.show();
+
+        btnExitDialog.setText("Yes! Where to Next?");
+        btnExitDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (welcomeDialog.isShowing()) {
+                    welcomeDialog.dismiss();
+                }
+            }
+        });
     }
 
     // For initializing the GoogleMap
@@ -180,7 +200,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if(addresses.size() > 0){
+                if (addresses.size() > 0) {
                     String country = addresses.get(0).getCountryName();
                     Log.i(TAG, "Country name: " + country);
 
@@ -210,7 +230,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     // Fetches the data from the RESTCountries API
-    class fetchData extends Thread{
+    class fetchData extends Thread {
 
         String data = "";
 
@@ -218,15 +238,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         public void run() {
             super.run();
 
-            mainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    progressDialog = new ProgressDialog(MapActivity.this);
-                    progressDialog.setMessage("Fetching Data");
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
-                }
-            });
             try {
                 String url = "https://restcountries.com/v2/all?fields=name,languages";
 
@@ -279,10 +290,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                         //Log.i(TAG, "Country: " + countryName + ", Language: " + language);
                         countryAndLang.put(countryName, language);
-                        }
                     }
+                }
 
-                    java.util.Collections.sort(countryList);
+                java.util.Collections.sort(countryList);
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -291,16 +302,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            mainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-
-                    if(progressDialog.isShowing())
-                        progressDialog.dismiss();
-                    listAdapter.notifyDataSetChanged();
-                }
-            });
         }
     }
 }

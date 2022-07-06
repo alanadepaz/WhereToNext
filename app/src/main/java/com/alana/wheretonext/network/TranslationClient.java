@@ -1,10 +1,11 @@
 package com.alana.wheretonext.network;
 
-import android.util.Log;
+import static com.parse.Parse.getApplicationContext;
 
+import android.content.Context;
+
+import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import com.alana.wheretonext.BuildConfig;
 
@@ -12,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import okhttp3.Cache;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -23,11 +25,17 @@ public class TranslationClient {
     public static String getTranslation(String textToTranslate, String languageToTranslateTo) {
         String translationResponse = "";
 
+        // TODO: CHECK IF THE TRANSLATIONS ARE ACTUALLY GETTING CACHED
+        File cacheDir = getApplicationContext().getCacheDir();
+        long cacheSize = 10L * 1024L * 1024L; // 10 MiB
+
         String url = "https://translation.googleapis.com/language/translate/v2?key=" + BuildConfig.GOOGLE_API_KEY;
         final MediaType JSON
                 = MediaType.get("application/json; charset=utf-8");
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .cache(new Cache(cacheDir, cacheSize))
+                .build();
 
         String requestBody = "{'q': '" + textToTranslate + "', 'target': '" + languageToTranslateTo + "'}";
 
@@ -37,7 +45,18 @@ public class TranslationClient {
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()) {
-            translationResponse = response.body().string();
+
+            try {
+                JSONObject translationObject = new JSONObject(response.body().string());
+                JSONObject data = translationObject.getJSONObject("data");
+                JSONArray translations = data.getJSONArray("translations");
+                JSONObject textAndSourceLanguage = translations.getJSONObject(0);
+                translationResponse = textAndSourceLanguage.getString("translatedText");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

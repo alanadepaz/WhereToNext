@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
+    tools:context=".login.LoginActivity">
 
     <ImageView
         android:id="@+id/ivIcon"
@@ -15,7 +15,8 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="20dp"
-        app:srcCompat="@drawable/wheretonext_no_bg" />
+        app:srcCompat="@drawable/wheretonext_no_bg"
+        android:backgroundTint="@color/navy_blue"/>
 
     <EditText
         android:id="@+id/etUsername"

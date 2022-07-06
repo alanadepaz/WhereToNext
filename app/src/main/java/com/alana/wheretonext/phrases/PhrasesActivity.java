@@ -54,13 +54,11 @@ public class PhrasesActivity extends AppCompatActivity {
     private Context context;
     private RecyclerView rvPhrases;
     private TextView tvCountryName;
-    //private Button btnToFavePhrases;
     protected PhrasesAdapter adapter;
     protected List<Phrase> allPhrases;
 
     // Initialize the array that will hold the translations
     protected List<String> allTranslations = Collections.synchronizedList(new ArrayList<String>());
-    private SwipeRefreshLayout swipeContainer;
 
     private String countryName;
     private String language;
@@ -83,30 +81,6 @@ public class PhrasesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phrases);
 
-        SlidingUpPanelLayout layout = findViewById(R.id.slidingUp);
-
-        layout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-                findViewById(R.id.rvPhrases).setAlpha(1 - slideOffset);
-
-            }
-
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if (newState == SlidingUpPanelLayout.PanelState.EXPANDED) {
-                    Toast.makeText(PhrasesActivity.this, "Panel expanded", Toast.LENGTH_SHORT).show();
-                    //goFavePhrasesActivity();
-
-                    sectionedAdapter.notifyDataSetChanged();
-                    //queryFavePhrases();
-                }
-                else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                    Toast.makeText(PhrasesActivity.this, "Panel collapsed", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         // Grab the country name and language from the MapActivity
         countryName = getIntent().getExtras().getString("countryName");
 
@@ -141,22 +115,35 @@ public class PhrasesActivity extends AppCompatActivity {
         rvFavePhrases.setLayoutManager(new LinearLayoutManager(context));
         rvFavePhrases.setAdapter(sectionedAdapter);
 
+        SlidingUpPanelLayout layout = findViewById(R.id.slidingUp);
+
+        layout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                findViewById(R.id.rvPhrases).setAlpha(1 - slideOffset);
+
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                    Toast.makeText(PhrasesActivity.this, "Panel expanded", Toast.LENGTH_SHORT).show();
+
+                    sectionedAdapter.notifyDataSetChanged();
+                    //queryFavePhrases();
+                }
+                else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                    Toast.makeText(PhrasesActivity.this, "Panel collapsed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         // Query phrases from Parse
         queryPhrases();
 
         // Query favorite Phrases too
         queryFavePhrases();
-
-
-        /*
-        btnToFavePhrases.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "btnToFavePhrases clicked");
-                goFavePhrasesActivity();
-            }
-        });
-         */
     }
 
     // TODO: update sharedPrefs onResume(), and then also query the data again to know if something is favorited
@@ -185,7 +172,6 @@ public class PhrasesActivity extends AppCompatActivity {
     protected void queryPhrases() {
         // Specify which class to query
         ParseQuery<Phrase> query = ParseQuery.getQuery(Phrase.class);
-        //query.include(Phrase.KEY_USER);
 
         query.setLimit(20);
         // order posts by creation date (newest first)
@@ -223,20 +209,10 @@ public class PhrasesActivity extends AppCompatActivity {
         allTranslations = fetchData.getTranslations();
     }
 
-    private void goFavePhrasesActivity() {
-        Intent i = new Intent(this, FavoritePhrasesActivity.class);
-        startActivity(i);
-    }
-
     // Fetches the data from the Cloud Translation API
     class FetchData implements Runnable {
 
-        String data = "";
         PhrasesActivity phrasesActivity;
-
-        public FetchData(PhrasesActivity phrasesActivity) {
-            this.phrasesActivity = phrasesActivity;
-        }
 
         public FetchData() {
             // Required empty constructor
@@ -244,21 +220,9 @@ public class PhrasesActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            //super.run();
-
             for (Phrase phrase : allPhrases) {
                 // Grab all translations
-                String translation = TranslationClient.getTranslation(phrase.getPhrase(), language);
-                String translatedText = "";
-                try {
-                    JSONObject translationObject = new JSONObject(translation);
-                    JSONObject data = translationObject.getJSONObject("data");
-                    JSONArray translations = data.getJSONArray("translations");
-                    JSONObject textAndSourceLanguage = translations.getJSONObject(0);
-                    translatedText = textAndSourceLanguage.getString("translatedText");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                String translatedText = TranslationClient.getTranslation(phrase.getPhrase(), language);
 
                 Log.d(TAG, "Translation: " + translatedText);
                 allTranslations.add(translatedText);
@@ -357,17 +321,7 @@ public class PhrasesActivity extends AppCompatActivity {
 
             for (FavoritePhrase favePhrase : allFavePhrases) {
                 // Grab all translations
-                String translation = TranslationClient.getTranslation(favePhrase.getFavoritePhrase().getString("phrase"), favePhrase.getLanguageCode());
-                String translatedText = "";
-                try {
-                    JSONObject translationObject = new JSONObject(translation);
-                    JSONObject data = translationObject.getJSONObject("data");
-                    JSONArray translations = data.getJSONArray("translations");
-                    JSONObject textAndSourceLanguage = translations.getJSONObject(0);
-                    translatedText = textAndSourceLanguage.getString("translatedText");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                String translatedText = TranslationClient.getTranslation(favePhrase.getFavoritePhrase().getString("phrase"), favePhrase.getLanguageCode());
 
                 List<String> faveCountryTranslations = favoriteTranslationsMap.get(favePhrase.getCountryName());
 
