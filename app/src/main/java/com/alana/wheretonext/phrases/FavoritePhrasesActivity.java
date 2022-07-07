@@ -64,7 +64,7 @@ public class FavoritePhrasesActivity extends AppCompatActivity {
         rvFavePhrases.setLayoutManager(new LinearLayoutManager(context));
         rvFavePhrases.setAdapter(sectionedAdapter);
 
-        queryPhrases();
+        queryFavePhrases();
     }
 
     @Override
@@ -88,7 +88,7 @@ public class FavoritePhrasesActivity extends AppCompatActivity {
         return true;
     }
 
-    protected void queryPhrases() {
+    protected void queryFavePhrases() {
         // Specify which class to query
         ParseQuery<FavoritePhrase> query = ParseQuery.getQuery(FavoritePhrase.class);
 

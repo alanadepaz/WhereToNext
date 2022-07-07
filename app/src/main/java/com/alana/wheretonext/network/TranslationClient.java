@@ -1,10 +1,12 @@
 package com.alana.wheretonext.network;
 
+import static com.parse.Parse.getApplicationContext;
+
+import android.content.Context;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import com.alana.wheretonext.BuildConfig;
 
@@ -12,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import okhttp3.Cache;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -20,7 +23,10 @@ import okhttp3.Response;
 
 public class TranslationClient {
 
+    public static final String TAG = "Translation Client";
+
     public static String getTranslation(String textToTranslate, String languageToTranslateTo) {
+
         String translationResponse = "";
 
         String url = "https://translation.googleapis.com/language/translate/v2?key=" + BuildConfig.GOOGLE_API_KEY;
@@ -37,7 +43,19 @@ public class TranslationClient {
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()) {
-            translationResponse = response.body().string();
+
+            Log.d(TAG, "Received response from server.");
+            try {
+                JSONObject translationObject = new JSONObject(response.body().string());
+                JSONObject data = translationObject.getJSONObject("data");
+                JSONArray translations = data.getJSONArray("translations");
+                JSONObject textAndSourceLanguage = translations.getJSONObject(0);
+                translationResponse = textAndSourceLanguage.getString("translatedText");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

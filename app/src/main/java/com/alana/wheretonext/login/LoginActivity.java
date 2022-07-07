@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.alana.wheretonext.MainActivity;
 import com.alana.wheretonext.map.MapActivity;
 import com.alana.wheretonext.signup.SignUpActivity;
 import com.parse.LogInCallback;
@@ -84,12 +83,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goMapActivity() {
         Intent i = new Intent(this, MapActivity.class);
-        startActivity(i);
-        finish();   // Finishing login activity once we've done the navigation
-    }
-
-    private void goMainActivity() {
-        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();   // Finishing login activity once we've done the navigation
     }
