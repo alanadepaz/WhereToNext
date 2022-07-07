@@ -21,6 +21,7 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alana.wheretonext.models.CountrySection;
 import com.alana.wheretonext.models.FavoritePhrase;
 import com.alana.wheretonext.models.Phrase;
 import com.parse.FindCallback;
@@ -30,10 +31,13 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import com.alana.wheretonext.R;
+
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHolder> {
 
@@ -47,13 +51,15 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
     private List<String> translations;
 
+    private SectionedRecyclerViewAdapter favePhrasesAdapter;
 
-    public PhrasesAdapter(Context context, List<Phrase> phrases, String countryName, String language, List<String> translations) {
+    public PhrasesAdapter(Context context, List<Phrase> phrases, String countryName, String language, List<String> translations, SectionedRecyclerViewAdapter favePhrasesAdapter) {
         this.context = context;
         this.phrases = phrases;
         this.countryName = countryName;
         this.language = language;
         this.translations = translations;
+        this.favePhrasesAdapter = favePhrasesAdapter;
     }
 
     @NonNull
@@ -122,7 +128,10 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                         editor.putBoolean(phrase.getPhrase() + countryName, true);
                         editor.commit();
 
-                        favoritePhrase(ParseUser.getCurrentUser(), countryName, language, phrase);
+                        FavoritePhrase favePhrase = favoritePhrase(ParseUser.getCurrentUser(), countryName, language, phrase);
+
+                        addToFavePhrasePanel(favePhrase, translation);
+
                     }
                     else
                     {
@@ -137,7 +146,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             });
         }
 
-        private void favoritePhrase(ParseUser currentUser, String countryName, String languageCode, Phrase phrase) {
+        private FavoritePhrase favoritePhrase(ParseUser currentUser, String countryName, String languageCode, Phrase phrase) {
             FavoritePhrase favePhrase = new FavoritePhrase();
             favePhrase.setUser(currentUser);
             favePhrase.setCountryName(countryName);
@@ -154,6 +163,8 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                     Log.i(TAG, "Post save was successful!");
                 }
             });
+
+            return favePhrase;
         }
 
         private void unFavoritePhrase(ParseUser currentUser, String countryName, Phrase phrase) {
@@ -179,6 +190,32 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                     }
                 }
             });
+        }
+
+        private void addToFavePhrasePanel(FavoritePhrase favePhrase, String translation) {
+            boolean sectionExists = false;
+            for (int i = 0; i < favePhrasesAdapter.getSectionCount(); i++)
+            {
+                CountrySection countrySection = (CountrySection) favePhrasesAdapter.getSection(i);
+
+                // Section exists
+                if (countrySection.getCountryName().equals(countryName)) {
+                    countrySection.addFavePhraseAndTranslation(favePhrase, translation);
+                    sectionExists = true;
+                    break;
+                }
+            }
+
+            if (!sectionExists) {
+
+                List<FavoritePhrase> favePhrases = new ArrayList<>();
+                favePhrases.add(favePhrase);
+
+                List<String> faveTranslations = new ArrayList<>();
+                faveTranslations.add(translation);
+
+                favePhrasesAdapter.addSection(new CountrySection(countryName, favePhrases, faveTranslations));
+            }
         }
     }
 }
