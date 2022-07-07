@@ -96,7 +96,9 @@ public class PhrasesActivity extends AppCompatActivity {
         // Initialize the array that will hold phrases and create a PhrasesAdapter
         allPhrases = new ArrayList<>();
 
-        phraseAdapter = new PhrasesAdapter(this, allPhrases, countryName, language, allTranslations);
+        favePhraseAdapter = new SectionedRecyclerViewAdapter();
+
+        phraseAdapter = new PhrasesAdapter(this, allPhrases, countryName, language, allTranslations, favePhraseAdapter);
 
         // Set the adapter on the recycler view
         rvPhrases.setAdapter(phraseAdapter);
@@ -107,8 +109,6 @@ public class PhrasesActivity extends AppCompatActivity {
         allFavePhrases = new ArrayList<>();
         filteredFavePhrases = new ArrayList<>();
         favoriteTranslationsMap = new HashMap<>();
-
-        favePhraseAdapter = new SectionedRecyclerViewAdapter();
 
         rvFavePhrases = findViewById(R.id.rvFavePhrases);
         rvFavePhrases.setLayoutManager(new LinearLayoutManager(context));
@@ -129,13 +129,17 @@ public class PhrasesActivity extends AppCompatActivity {
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 Log.d(TAG, "In bind method onPanelStateChanged");
                 if (newState == SlidingUpPanelLayout.PanelState.EXPANDED) {
-                    //Toast.makeText(PhrasesActivity.this, "Panel expanded", Toast.LENGTH_SHORT).show();
+                    //recreate();
+                    Toast.makeText(PhrasesActivity.this, "Panel expanded", Toast.LENGTH_SHORT).show();
 
                     //phraseAdapter.notifyDataSetChanged();
+                    //CountrySection section = (CountrySection) favePhraseAdapter.getSection(0);
+                    //section.favePhrasesList.add(new FavoritePhrase());
                     favePhraseAdapter.notifyDataSetChanged();
                     //queryFavePhrases();
                 }
                 else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                    //recreate();
                     //Toast.makeText(PhrasesActivity.this, "Panel collapsed", Toast.LENGTH_SHORT).show();
                     //phraseAdapter.notifyDataSetChanged();
                     favePhraseAdapter.notifyDataSetChanged();
@@ -247,6 +251,9 @@ public class PhrasesActivity extends AppCompatActivity {
         }
     }
 
+    // TODO: find a way to create one section for the one fave phrase
+    // TODO: The problem is probably that I'm not updating the adapter before notifying the dataset changed
+    // TODO: pass in the favePhrasesAdapter to the phrasesAdapter to update when toggled
     // FOR FAVORITE PHRASES PANEL
     protected void queryFavePhrases() {
         // Specify which class to query
@@ -261,6 +268,8 @@ public class PhrasesActivity extends AppCompatActivity {
 
         rvFavePhrases.removeAllViews();
         rvFavePhrases.refreshDrawableState();
+
+        favePhraseAdapter.removeAllSections();
 
         query.findInBackground(new FindCallback<FavoritePhrase>() {
             @Override

@@ -42,6 +42,30 @@ public class CountrySection extends Section {
         this.countryName = countryName;
     }
 
+    public List<FavoritePhrase> getFavePhrasesList() {
+        return favePhrasesList;
+    }
+
+    public void addFavePhraseAndTranslation(FavoritePhrase favoritePhrase, String translation) {
+        favePhrasesList.add(favoritePhrase);
+        translations.add(translation);
+    }
+
+    public void removeFavePhraseAndTranslation(FavoritePhrase favoritePhrase) {
+        int position = favePhrasesList.indexOf(favoritePhrase);
+
+        favePhrasesList.remove(position);
+        translations.remove(position);
+    }
+
+    public List<String> getTranslations() {
+        return translations;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
     @Override
     public int getContentItemsTotal() {
         return favePhrasesList.size();
