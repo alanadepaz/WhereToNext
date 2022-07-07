@@ -29,17 +29,9 @@ public class TranslationClient {
 
         String translationResponse = "";
 
-        // TODO: CHECK IF THE TRANSLATIONS ARE ACTUALLY GETTING CACHED
-        //File cacheDir = getApplicationContext().getCacheDir();
-        //long cacheSize = 10L * 1024L * 1024L; // 10 MiB
-
         String url = "https://translation.googleapis.com/language/translate/v2?key=" + BuildConfig.GOOGLE_API_KEY;
         final MediaType JSON
                 = MediaType.get("application/json; charset=utf-8");
-
-//        OkHttpClient client = new OkHttpClient.Builder()
-//                .cache(new Cache(cacheDir, cacheSize))
-//                .build();
 
         OkHttpClient client = new OkHttpClient();
 

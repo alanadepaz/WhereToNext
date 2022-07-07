@@ -1,13 +1,17 @@
-package com.alana.wheretonext.network;
+package com.alana.wheretonext;
 
 import android.app.Application;
+
+import androidx.room.Room;
 
 import com.alana.wheretonext.models.FavoritePhrase;
 import com.alana.wheretonext.models.Phrase;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
-public class ParseApplication extends Application {
+public class MainApplication extends Application {
+
+    WhereToNextDatabase whereToNextDB;
 
     @Override
     public void onCreate() {
@@ -23,5 +27,12 @@ public class ParseApplication extends Application {
                 .server("https://parseapi.back4app.com")
                 .build()
         );
+
+        // when upgrading versions, kill the original tables by using fallbackToDestructiveMigration()
+        whereToNextDB = Room.databaseBuilder(this, WhereToNextDatabase.class, WhereToNextDatabase.NAME).fallbackToDestructiveMigration().build();
+    }
+
+    public WhereToNextDatabase getWhereToNextDB() {
+        return whereToNextDB;
     }
 }

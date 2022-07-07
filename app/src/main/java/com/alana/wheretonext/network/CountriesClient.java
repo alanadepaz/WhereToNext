@@ -14,10 +14,11 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class CountriesClient {
-    public static void getTranslation(String data, ArrayList<String> countryList, Map<String, String> countryAndLang) {
+    public static final String COUNTRY_URL = "https://restcountries.com/v2/all?fields=name,languages";
+    public static void getCountries(String data, ArrayList<String> countryList, Map<String, String> countryAndLang) {
 
         try {
-            String url = "https://restcountries.com/v2/all?fields=name,languages";
+            String url = COUNTRY_URL;
 
             OkHttpClient client = new OkHttpClient();
 
@@ -39,23 +40,25 @@ public class CountriesClient {
                     String countryName = country.getString("name");
 
                     // Handling some exceptions in the database
-                    if (countryName.equals("Russian Federation")) {
-                        countryName = "Russia";
-                    }
-                    if (countryName.equals("Bolivia (Plurinational State of)")) {
-                        countryName = "Bolivia";
-                    }
-                    if (countryName.equals("Congo (Democratic Republic of the)")) {
-                        countryName = "Republic of the Congo";
-                    }
-                    if (countryName.equals("Iran (Islamic Republic of)")) {
-                        countryName = "Iran";
-                    }
-                    if (countryName.equals("Korea (Democratic People's Republic of)")) {
-                        countryName = "North Korea";
-                    }
-                    if (countryName.equals("Korea (Republic of)")) {
-                        countryName = "South Korea";
+                    switch (countryName) {
+                        case "Russian Federation":
+                            countryName = "Russia";
+                            break;
+                        case "Bolivia (Plurinational State of)":
+                            countryName = "Bolivia";
+                            break;
+                        case "Congo (Democratic Republic of the)":
+                            countryName = "Republic of the Congo";
+                            break;
+                        case "Iran (Islamic Republic of)":
+                            countryName = "Iran";
+                            break;
+                        case "Korea (Democratic People's Republic of)":
+                            countryName = "North Korea";
+                            break;
+                        case "Korea (Republic of)":
+                            countryName = "South Korea";
+                            break;
                     }
 
 

@@ -20,11 +20,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alana.wheretonext.MainApplication;
 import com.alana.wheretonext.login.LoginActivity;
 import com.alana.wheretonext.models.CountrySection;
 import com.alana.wheretonext.models.FavoritePhrase;
 import com.alana.wheretonext.models.Phrase;
+import com.alana.wheretonext.models.Translation;
 import com.alana.wheretonext.network.TranslationClient;
+import com.alana.wheretonext.network.TranslationDao;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -40,10 +43,6 @@ import java.util.Map;
 import com.alana.wheretonext.R;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 
@@ -54,7 +53,7 @@ public class PhrasesActivity extends AppCompatActivity {
     private Context context;
     private RecyclerView rvPhrases;
     private TextView tvCountryName;
-    protected PhrasesAdapter adapter;
+    protected PhrasesAdapter phraseAdapter;
     protected List<Phrase> allPhrases;
 
     // Initialize the array that will hold the translations
@@ -66,7 +65,7 @@ public class PhrasesActivity extends AppCompatActivity {
     // FOR FAVORITE PHRASES PANEL
     private RecyclerView rvFavePhrases;
     protected List<FavoritePhrase> allFavePhrases;
-    private SectionedRecyclerViewAdapter sectionedAdapter;
+    private SectionedRecyclerViewAdapter favePhraseAdapter;
 
     protected List<FavoritePhrase> filteredFavePhrases;
 
@@ -97,10 +96,10 @@ public class PhrasesActivity extends AppCompatActivity {
         // Initialize the array that will hold phrases and create a PhrasesAdapter
         allPhrases = new ArrayList<>();
 
-        adapter = new PhrasesAdapter(this, allPhrases, countryName, language, allTranslations);
+        phraseAdapter = new PhrasesAdapter(this, allPhrases, countryName, language, allTranslations);
 
         // Set the adapter on the recycler view
-        rvPhrases.setAdapter(adapter);
+        rvPhrases.setAdapter(phraseAdapter);
         // Set the layout manager on the recycler view
         rvPhrases.setLayoutManager(new LinearLayoutManager(this));
 
@@ -109,17 +108,18 @@ public class PhrasesActivity extends AppCompatActivity {
         filteredFavePhrases = new ArrayList<>();
         favoriteTranslationsMap = new HashMap<>();
 
-        sectionedAdapter = new SectionedRecyclerViewAdapter();
+        favePhraseAdapter = new SectionedRecyclerViewAdapter();
 
         rvFavePhrases = findViewById(R.id.rvFavePhrases);
         rvFavePhrases.setLayoutManager(new LinearLayoutManager(context));
-        rvFavePhrases.setAdapter(sectionedAdapter);
+        rvFavePhrases.setAdapter(favePhraseAdapter);
 
         SlidingUpPanelLayout layout = findViewById(R.id.slidingUp);
 
         layout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
+                Log.d(TAG, "In bind method onPanelSlide");
                 findViewById(R.id.rvPhrases).setAlpha(1 - slideOffset);
 
             }
@@ -127,14 +127,18 @@ public class PhrasesActivity extends AppCompatActivity {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                Log.d(TAG, "In bind method onPanelStateChanged");
                 if (newState == SlidingUpPanelLayout.PanelState.EXPANDED) {
                     //Toast.makeText(PhrasesActivity.this, "Panel expanded", Toast.LENGTH_SHORT).show();
 
-                    sectionedAdapter.notifyDataSetChanged();
+                    //phraseAdapter.notifyDataSetChanged();
+                    favePhraseAdapter.notifyDataSetChanged();
                     //queryFavePhrases();
                 }
                 else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                     //Toast.makeText(PhrasesActivity.this, "Panel collapsed", Toast.LENGTH_SHORT).show();
+                    //phraseAdapter.notifyDataSetChanged();
+                    favePhraseAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -196,7 +200,7 @@ public class PhrasesActivity extends AppCompatActivity {
                     ex.printStackTrace();
                 }
 
-                adapter.notifyDataSetChanged();
+                phraseAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -220,12 +224,21 @@ public class PhrasesActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            final TranslationDao translationDao = ((MainApplication) getApplicationContext()).getWhereToNextDB().translationDao();
+
+            // TODO: Optimize this by sending in multiple phrases at once rather than with a for loop
             for (Phrase phrase : allPhrases) {
                 // Grab all translations
-                String translatedText = TranslationClient.getTranslation(phrase.getPhrase(), language);
+                Translation translation = translationDao.getTranslation(phrase.getPhrase(), language);
+                Log.d(TAG, "Cached translation: " + translation);
+                if (translation == null){
+                    String translatedText = TranslationClient.getTranslation(phrase.getPhrase(), language);
+                    translation = new Translation(phrase.getPhrase(), language, translatedText);
+                    translationDao.insertTranslation(translation);
+                }
 
-                Log.d(TAG, "Translation: " + translatedText);
-                allTranslations.add(translatedText);
+                Log.d(TAG, "Translation: " + translation.translation);
+                allTranslations.add(translation.translation);
             }
         }
 
@@ -273,11 +286,11 @@ public class PhrasesActivity extends AppCompatActivity {
                         filteredFavePhrases = entry.getValue();
                         List<String> filteredTranslations = favoriteTranslationsMap.get(entry.getKey());
 
-                        sectionedAdapter.addSection(new CountrySection(entry.getKey(), filteredFavePhrases, filteredTranslations));
+                        favePhraseAdapter.addSection(new CountrySection(entry.getKey(), filteredFavePhrases, filteredTranslations));
                     }
                 }
-                //adapter.notifyDataSetChanged();
-                sectionedAdapter.notifyDataSetChanged();
+                //phraseAdapter.notifyDataSetChanged();
+                favePhraseAdapter.notifyDataSetChanged();
             }
         });
     }

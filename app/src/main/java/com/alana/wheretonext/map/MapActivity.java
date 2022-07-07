@@ -229,7 +229,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         public void run() {
             super.run();
 
-            CountriesClient.getTranslation(data, countryList, countryAndLang);
+            CountriesClient.getCountries(data, countryList, countryAndLang);
 
         }
     }
