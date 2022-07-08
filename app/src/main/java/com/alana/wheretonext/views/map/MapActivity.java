@@ -1,4 +1,4 @@
-package com.alana.wheretonext.map;
+package com.alana.wheretonext.views.map;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,8 +20,8 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.LottieDrawable;
 import com.alana.wheretonext.network.CountriesClient;
-import com.alana.wheretonext.phrases.PhrasesActivity;
-import com.alana.wheretonext.login.LoginActivity;
+import com.alana.wheretonext.views.phrases.PhrasesActivity;
+import com.alana.wheretonext.views.login.LoginActivity;
 import com.amrdeveloper.lottiedialog.LottieDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,22 +30,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseUser;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.alana.wheretonext.R;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 // Implement OnMapReadyCallback.
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {

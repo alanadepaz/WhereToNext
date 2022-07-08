@@ -1,4 +1,4 @@
-package com.alana.wheretonext.login;
+package com.alana.wheretonext.views.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,8 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.alana.wheretonext.map.MapActivity;
-import com.alana.wheretonext.signup.SignUpActivity;
+import com.alana.wheretonext.views.map.MapActivity;
+import com.alana.wheretonext.views.signup.SignUpActivity;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;

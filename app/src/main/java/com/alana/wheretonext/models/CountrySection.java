@@ -19,6 +19,8 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 
 import com.alana.wheretonext.R;
+import com.alana.wheretonext.views.phrases.PhrasesActivity;
+import com.alana.wheretonext.views.phrases.PhrasesAdapter;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -51,11 +53,23 @@ public class CountrySection extends Section {
         translations.add(translation);
     }
 
-    public void removeFavePhraseAndTranslation(FavoritePhrase favoritePhrase) {
-        int position = favePhrasesList.indexOf(favoritePhrase);
+    public boolean removeFavePhraseAndTranslation(FavoritePhrase favoritePhrase) {
+        Log.d(TAG, "Length: " + favePhrasesList.size());
 
-        favePhrasesList.remove(position);
-        translations.remove(position);
+        int i = 0;
+        for (i = 0; i < favePhrasesList.size(); i++) {
+            FavoritePhrase currFavePhrase = favePhrasesList.get(i);
+            if (favoritePhrase.getFavoritePhrase().getPhrase().equals(currFavePhrase.getFavoritePhrase().getPhrase())
+            && favoritePhrase.getCountryName().equals(currFavePhrase.getCountryName())
+            && favoritePhrase.getLanguageCode().equals(currFavePhrase.getLanguageCode())) {
+                break;
+            }
+        }
+
+        favePhrasesList.remove(i);
+        translations.remove(i);
+
+        return (favePhrasesList.size() == 0);
     }
 
     public List<String> getTranslations() {
@@ -122,9 +136,11 @@ public class CountrySection extends Section {
             Log.d(TAG, favePhrase.getFavoritePhrase().getPhrase() + countryName);
             btnFavePhrase.setChecked(sharedPrefs.getBoolean(favePhrase.getFavoritePhrase().getPhrase() + countryName, true));
 
+            /*
             btnFavePhrase.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    removeFavePhraseAndTranslation(favePhrase);
                     unFavoritePhrase(ParseUser.getCurrentUser(), countryName, favePhrase.getFavoritePhrase());
 
                     SharedPreferences.Editor editor = itemView.getContext().getSharedPreferences("com.alana.wheretonext", MODE_PRIVATE).edit();
@@ -132,6 +148,7 @@ public class CountrySection extends Section {
                     editor.commit();
                 }
             });
+             */
         }
 
         private void unFavoritePhrase(ParseUser currentUser, String countryName, Phrase phrase) {
