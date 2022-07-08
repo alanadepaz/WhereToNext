@@ -1,10 +1,9 @@
-package com.alana.wheretonext;
+package com.alana.wheretonext.data.db;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
-import com.alana.wheretonext.models.Translation;
-import com.alana.wheretonext.network.TranslationDao;
+import com.alana.wheretonext.data.db.models.Translation;
 
 @Database(entities={Translation.class}, version=1)
 public abstract class WhereToNextDatabase extends RoomDatabase {

@@ -1,4 +1,4 @@
-package com.alana.wheretonext.views.login;
+package com.alana.wheretonext.ui.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,11 +11,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.alana.wheretonext.views.map.MapActivity;
-import com.alana.wheretonext.views.signup.SignUpActivity;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseUser;
+import com.alana.wheretonext.exceptions.UserException;
+import com.alana.wheretonext.service.UserService;
+import com.alana.wheretonext.ui.map.MapActivity;
+import com.alana.wheretonext.ui.signup.SignUpActivity;
 
 import com.alana.wheretonext.R;
 
@@ -28,13 +27,15 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnSignUp;
     private ImageView ivIcon;
 
+    private UserService userService = new UserService();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
 
-        if (ParseUser.getCurrentUser() != null) {
+        if (userService.isLoggedIn()) {
             goMapActivity();
         }
 
@@ -67,18 +68,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginUser(String username, String password) {
         Log.i(TAG, "Attempting to login user" + username);
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                if (e != null) {
-                    Toast.makeText(LoginActivity.this, "Issue with login.", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Issue with login", e);
-                    return;
-                }
-                // Navigate to the feed activity if the user has signed in properly
-                goMapActivity();
-            }
-        });
+
+        try {
+            userService.loginUser(username, password);
+            goMapActivity();
+        } catch (UserException e) {
+            Toast.makeText(LoginActivity.this, "Issue with login.", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Issue with login", e);
+        }
     }
 
     private void goMapActivity() {

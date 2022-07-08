@@ -1,4 +1,4 @@
-package com.alana.wheretonext.views.phrases;
+package com.alana.wheretonext.ui.phrases;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,13 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alana.wheretonext.MainApplication;
-import com.alana.wheretonext.views.login.LoginActivity;
-import com.alana.wheretonext.models.CountrySection;
-import com.alana.wheretonext.models.FavoritePhrase;
-import com.alana.wheretonext.models.Phrase;
-import com.alana.wheretonext.models.Translation;
-import com.alana.wheretonext.network.TranslationClient;
-import com.alana.wheretonext.network.TranslationDao;
+import com.alana.wheretonext.ui.login.LoginActivity;
+import com.alana.wheretonext.data.models.CountrySection;
+import com.alana.wheretonext.data.db.models.FavoritePhrase;
+import com.alana.wheretonext.data.db.models.Phrase;
+import com.alana.wheretonext.data.db.models.Translation;
+import com.alana.wheretonext.data.network.TranslationClient;
+import com.alana.wheretonext.data.db.TranslationDao;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;

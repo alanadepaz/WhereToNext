@@ -8,7 +8,7 @@
     android:layout_marginStart="10dp"
     android:layout_marginTop="10dp"
     android:orientation="vertical"
-    tools:context=".views.signup.SignUpActivity">
+    tools:context=".ui.signup.SignUpActivity">
 
     <EditText
         android:id="@+id/etSignUpUsername"
