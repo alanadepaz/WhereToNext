@@ -1,4 +1,4 @@
-package com.alana.wheretonext.views.phrases;
+package com.alana.wheretonext.ui.phrases;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,10 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 import com.alana.wheretonext.R;
-import com.alana.wheretonext.views.login.LoginActivity;
-import com.alana.wheretonext.models.CountrySection;
-import com.alana.wheretonext.models.FavoritePhrase;
-import com.alana.wheretonext.network.TranslationClient;
+import com.alana.wheretonext.ui.login.LoginActivity;
+import com.alana.wheretonext.data.models.CountrySection;
+import com.alana.wheretonext.data.db.models.FavoritePhrase;
+import com.alana.wheretonext.data.network.TranslationClient;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;

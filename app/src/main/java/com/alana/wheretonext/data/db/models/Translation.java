@@ -1,4 +1,4 @@
-package com.alana.wheretonext.models;
+package com.alana.wheretonext.data.db.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

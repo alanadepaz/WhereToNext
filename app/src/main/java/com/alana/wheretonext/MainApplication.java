@@ -4,8 +4,9 @@ import android.app.Application;
 
 import androidx.room.Room;
 
-import com.alana.wheretonext.models.FavoritePhrase;
-import com.alana.wheretonext.models.Phrase;
+import com.alana.wheretonext.data.db.WhereToNextDatabase;
+import com.alana.wheretonext.data.db.models.FavoritePhrase;
+import com.alana.wheretonext.data.db.models.Phrase;
 import com.parse.Parse;
 import com.parse.ParseObject;
 

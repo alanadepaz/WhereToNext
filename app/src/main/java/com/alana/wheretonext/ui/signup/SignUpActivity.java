@@ -1,4 +1,4 @@
-package com.alana.wheretonext.views.signup;
+package com.alana.wheretonext.ui.signup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,9 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.alana.wheretonext.views.login.LoginActivity;
-import com.parse.ParseException;
-import com.parse.ParseUser;
+import com.alana.wheretonext.exceptions.UserException;
+import com.alana.wheretonext.service.UserService;
+import com.alana.wheretonext.ui.login.LoginActivity;
 
 import com.alana.wheretonext.R;
 
@@ -24,6 +24,8 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText etSignUpUsername;
     private EditText etSignUpEmail;
     private EditText etSignUpPassword;
+
+    private UserService userService = new UserService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,29 +55,19 @@ public class SignUpActivity extends AppCompatActivity {
                 String email = etSignUpEmail.getText().toString();
 
                 try {
-                    saveUser(username, password, email);
+                    userService.saveUser(username, password, email);
                     Toast.makeText(SignUpActivity.this, "User successfully created!", Toast.LENGTH_SHORT).show();
-                    logoutUser();
-                } catch (ParseException e) {
-                    Log.e(TAG, "Could not save user.");
+
+                    // After signing up, force the user to log in with their new credentials
+                    userService.logoutUser();
+                    goLoginActivity();
+
+                } catch (UserException e) {
+                    Log.e(TAG, "Could not save user: " + e);
                     e.printStackTrace();
                 }
             }
-
-            private void saveUser(String username, String password, String email) throws ParseException {
-                ParseUser newUser = new ParseUser();
-                newUser.put("username", username);
-                newUser.put("password", password);
-                newUser.put("email", email);
-                newUser.signUp();
-            }
         });
-    }
-
-    private void logoutUser() {
-        Log.i(TAG, "Attempting to log out user");
-        ParseUser.logOutInBackground();
-        goLoginActivity();
     }
 
     private void goLoginActivity() {

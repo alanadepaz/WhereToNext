@@ -1,12 +1,9 @@
-package com.alana.wheretonext.models;
-
-import static android.content.Context.MODE_PRIVATE;
+package com.alana.wheretonext.data.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -19,8 +16,8 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 
 import com.alana.wheretonext.R;
-import com.alana.wheretonext.views.phrases.PhrasesActivity;
-import com.alana.wheretonext.views.phrases.PhrasesAdapter;
+import com.alana.wheretonext.data.db.models.FavoritePhrase;
+import com.alana.wheretonext.data.db.models.Phrase;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;

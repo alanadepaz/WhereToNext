@@ -1,4 +1,4 @@
-package com.alana.wheretonext.views.map;
+package com.alana.wheretonext.ui.map;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,9 +19,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieDrawable;
-import com.alana.wheretonext.network.CountriesClient;
-import com.alana.wheretonext.views.phrases.PhrasesActivity;
-import com.alana.wheretonext.views.login.LoginActivity;
+import com.alana.wheretonext.data.network.CountriesClient;
+import com.alana.wheretonext.ui.phrases.PhrasesActivity;
+import com.alana.wheretonext.ui.login.LoginActivity;
 import com.amrdeveloper.lottiedialog.LottieDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

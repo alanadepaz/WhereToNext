@@ -1,4 +1,4 @@
-package com.alana.wheretonext.views.phrases;
+package com.alana.wheretonext.ui.phrases;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -17,9 +17,9 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alana.wheretonext.models.CountrySection;
-import com.alana.wheretonext.models.FavoritePhrase;
-import com.alana.wheretonext.models.Phrase;
+import com.alana.wheretonext.data.models.CountrySection;
+import com.alana.wheretonext.data.db.models.FavoritePhrase;
+import com.alana.wheretonext.data.db.models.Phrase;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.Locale;
 
 import com.alana.wheretonext.R;
-
-import org.w3c.dom.Text;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 

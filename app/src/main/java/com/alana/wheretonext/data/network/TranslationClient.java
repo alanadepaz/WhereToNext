@@ -1,11 +1,7 @@
-package com.alana.wheretonext.network;
+package com.alana.wheretonext.data.network;
 
-import static com.parse.Parse.getApplicationContext;
-
-import android.content.Context;
 import android.util.Log;
 
-import java.io.File;
 import java.io.IOException;
 
 import com.alana.wheretonext.BuildConfig;
@@ -14,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import okhttp3.Cache;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
