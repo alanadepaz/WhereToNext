@@ -1,27 +1,23 @@
-package com.alana.wheretonext.phrases;
+package com.alana.wheretonext.views.phrases;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alana.wheretonext.MainApplication;
-import com.alana.wheretonext.login.LoginActivity;
+import com.alana.wheretonext.views.login.LoginActivity;
 import com.alana.wheretonext.models.CountrySection;
 import com.alana.wheretonext.models.FavoritePhrase;
 import com.alana.wheretonext.models.Phrase;
@@ -132,16 +128,10 @@ public class PhrasesActivity extends AppCompatActivity {
                     //recreate();
                     Toast.makeText(PhrasesActivity.this, "Panel expanded", Toast.LENGTH_SHORT).show();
 
-                    //phraseAdapter.notifyDataSetChanged();
-                    //CountrySection section = (CountrySection) favePhraseAdapter.getSection(0);
-                    //section.favePhrasesList.add(new FavoritePhrase());
                     favePhraseAdapter.notifyDataSetChanged();
-                    //queryFavePhrases();
                 }
                 else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                     //recreate();
-                    //Toast.makeText(PhrasesActivity.this, "Panel collapsed", Toast.LENGTH_SHORT).show();
-                    //phraseAdapter.notifyDataSetChanged();
                     favePhraseAdapter.notifyDataSetChanged();
                 }
             }
@@ -251,9 +241,6 @@ public class PhrasesActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: find a way to create one section for the one fave phrase
-    // TODO: The problem is probably that I'm not updating the adapter before notifying the dataset changed
-    // TODO: pass in the favePhrasesAdapter to the phrasesAdapter to update when toggled
     // FOR FAVORITE PHRASES PANEL
     protected void queryFavePhrases() {
         // Specify which class to query

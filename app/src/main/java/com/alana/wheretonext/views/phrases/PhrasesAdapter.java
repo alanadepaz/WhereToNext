@@ -1,4 +1,4 @@
-package com.alana.wheretonext.phrases;
+package com.alana.wheretonext.views.phrases;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -9,10 +9,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.ScaleAnimation;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +21,6 @@ import com.alana.wheretonext.models.CountrySection;
 import com.alana.wheretonext.models.FavoritePhrase;
 import com.alana.wheretonext.models.Phrase;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -36,6 +31,8 @@ import java.util.List;
 import java.util.Locale;
 
 import com.alana.wheretonext.R;
+
+import org.w3c.dom.Text;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
@@ -78,7 +75,6 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
     }
 
 
-
     @Override
     public int getItemCount() {
         return phrases.size();
@@ -98,6 +94,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             tvTranslatedText = itemView.findViewById(R.id.tvTranslatedText);
             tvPhrase = itemView.findViewById(R.id.tvPhrase);
             btnFavePhrase = itemView.findViewById(R.id.btnFavePhrase);
+
         }
 
         public void bind(Phrase phrase, String translation) {
@@ -122,8 +119,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                    if (isChecked)
-                    {
+                    if (isChecked) {
                         SharedPreferences.Editor editor = context.getSharedPreferences("com.alana.wheretonext", MODE_PRIVATE).edit();
                         editor.putBoolean(phrase.getPhrase() + countryName, true);
                         editor.commit();
@@ -132,13 +128,14 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
                         addToFavePhrasePanel(favePhrase, translation);
 
-                    }
-                    else
-                    {
+                    } else {
                         SharedPreferences.Editor editor = context.getSharedPreferences("com.alana.wheretonext", MODE_PRIVATE).edit();
                         editor.putBoolean(phrase.getPhrase() + countryName, false);
                         editor.commit();
 
+                        FavoritePhrase favePhrase = getFavoritePhrase(ParseUser.getCurrentUser(), countryName, phrase);
+
+                        removeFromFavePhrasePanel(favePhrase);
                         unFavoritePhrase(ParseUser.getCurrentUser(), countryName, phrase);
                     }
                     Log.d(TAG, String.valueOf(sharedPrefs.getBoolean(phrase.getPhrase() + countryName, false)));
@@ -167,6 +164,26 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             return favePhrase;
         }
 
+        private FavoritePhrase getFavoritePhrase(ParseUser currentUser, String countryName, Phrase phrase) {
+            ParseQuery<FavoritePhrase> query = ParseQuery.getQuery("FavoritePhrase");
+            query.whereEqualTo("user", currentUser);
+            query.whereEqualTo("countryName", countryName);
+            query.whereEqualTo("favoritePhrase", phrase);
+            try {
+                List<FavoritePhrase> favePhraseList = query.find();
+
+                Log.d(TAG, "Size: " + favePhraseList.size());
+                if (favePhraseList.size() > 0) {
+                    Log.d(TAG, "Getting: " + favePhraseList.get(0));
+                    return favePhraseList.get(0);
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
         private void unFavoritePhrase(ParseUser currentUser, String countryName, Phrase phrase) {
             ParseQuery<FavoritePhrase> query = ParseQuery.getQuery("FavoritePhrase");
             query.whereEqualTo("user", currentUser);
@@ -193,20 +210,13 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
         }
 
         private void addToFavePhrasePanel(FavoritePhrase favePhrase, String translation) {
-            boolean sectionExists = false;
-            for (int i = 0; i < favePhrasesAdapter.getSectionCount(); i++)
+
+            CountrySection countrySection = getCountrySection();
+            if (countrySection != null)
             {
-                CountrySection countrySection = (CountrySection) favePhrasesAdapter.getSection(i);
-
-                // Section exists
-                if (countrySection.getCountryName().equals(countryName)) {
-                    countrySection.addFavePhraseAndTranslation(favePhrase, translation);
-                    sectionExists = true;
-                    break;
-                }
+                countrySection.addFavePhraseAndTranslation(favePhrase, translation);
             }
-
-            if (!sectionExists) {
+            else {
 
                 List<FavoritePhrase> favePhrases = new ArrayList<>();
                 favePhrases.add(favePhrase);
@@ -216,6 +226,30 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
                 favePhrasesAdapter.addSection(new CountrySection(countryName, favePhrases, faveTranslations));
             }
+        }
+
+        private void removeFromFavePhrasePanel(FavoritePhrase favePhrase) {
+            Log.d(TAG, "Country: " + favePhrase.getCountryName());
+            CountrySection countrySection = getCountrySection();
+
+            if (countrySection != null)
+            {
+                boolean listEmpty = countrySection.removeFavePhraseAndTranslation(favePhrase);
+                if (listEmpty) {
+                    // TODO: remove header
+
+                }
+            }
+        }
+
+        private CountrySection getCountrySection() {
+            for (int i = 0; i < favePhrasesAdapter.getSectionCount(); i++) {
+                CountrySection countrySection = (CountrySection) favePhrasesAdapter.getSection(i);
+
+                // Section exists
+                if (countrySection.getCountryName().equals(countryName)) { return countrySection; }
+            }
+            return null;
         }
     }
 }
