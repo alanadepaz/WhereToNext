@@ -22,6 +22,7 @@ import com.airbnb.lottie.LottieDrawable;
 import com.alana.wheretonext.data.network.CountriesClient;
 import com.alana.wheretonext.ui.phrases.PhrasesActivity;
 import com.alana.wheretonext.ui.login.LoginActivity;
+import com.alana.wheretonext.utils.CountryUtil;
 import com.amrdeveloper.lottiedialog.LottieDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -220,8 +221,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         public void run() {
             super.run();
 
-            CountriesClient.getCountries(data, countryList, countryAndLang);
-
+            //CountriesClient.getCountries(data, countryList, countryAndLang);
+            CountryUtil.getCountries(getApplicationContext(), countryList, countryAndLang);
         }
     }
 }
