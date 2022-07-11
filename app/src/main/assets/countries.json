@@ -372,7 +372,7 @@
     "independent": false
   },
   {
-    "name": "Bolivia (Plurinational State of)",
+    "name": "Bolivia",
     "languages": [
       {
         "iso639_1": "es",
@@ -798,7 +798,7 @@
     "independent": false
   },
   {
-    "name": "Congo (Democratic Republic of the)",
+    "name": "Republic of the Congo",
     "languages": [
       {
         "iso639_1": "fr",
@@ -1641,7 +1641,7 @@
     "independent": false
   },
   {
-    "name": "Iran (Islamic Republic of)",
+    "name": "Iran",
     "languages": [
       {
         "iso639_1": "fa",
@@ -2475,7 +2475,7 @@
     "independent": false
   },
   {
-    "name": "Korea (Democratic People's Republic of)",
+    "name": "North Korea",
     "languages": [
       {
         "iso639_1": "ko",
@@ -2757,7 +2757,7 @@
     "independent": false
   },
   {
-    "name": "Russian Federation",
+    "name": "Russia",
     "languages": [
       {
         "iso639_1": "ru",
@@ -3177,7 +3177,7 @@
     "independent": false
   },
   {
-    "name": "Korea (Republic of)",
+    "name": "South Korea",
     "languages": [
       {
         "iso639_1": "ko",

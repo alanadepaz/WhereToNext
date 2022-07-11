@@ -37,12 +37,6 @@ android {
         exclude 'project.properties'
     }
 }
-// Used to replace Hamcrest (used for parsing JSON) with JUnit because it disables the opportunity to perform unit tests
-configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute module('org.hamcrest:hamcrest-core:1.1') with module('junit:junit:4.10')
-    }
-}
 
 ext {
     roomVersion = "2.1.0"
@@ -97,5 +91,5 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$roomVersion"
 
     // For reading JSON files
-    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
