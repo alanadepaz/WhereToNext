@@ -122,12 +122,9 @@ public class PhrasesActivity extends AppCompatActivity {
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 if (newState == SlidingUpPanelLayout.PanelState.EXPANDED) {
-                    //recreate();
-                    Toast.makeText(PhrasesActivity.this, "Panel expanded", Toast.LENGTH_SHORT).show();
 
                     favePhraseAdapter.notifyDataSetChanged();
                 } else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                    //recreate();
                     favePhraseAdapter.notifyDataSetChanged();
                 }
             }

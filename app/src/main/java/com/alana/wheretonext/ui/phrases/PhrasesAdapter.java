@@ -196,7 +196,6 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
                         FavoritePhrase favePhrase = new FavoritePhrase(countryName, language, phrase);
                         phraseService.favoritePhrase(favePhrase);
-                        Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show();
 
                         addToFavePhrasePanel(favePhrase, translation);
 
@@ -218,10 +217,10 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
         private void addToFavePhrasePanel(FavoritePhrase favePhrase, String translation) {
 
-            PhrasesSection countrySection = getCountrySection();
-            if (countrySection != null)
+            PhrasesSection phrasesSection = getPhrasesSection();
+            if (phrasesSection != null)
             {
-                countrySection.addFavePhraseAndTranslation(favePhrase, translation);
+                phrasesSection.addFavePhraseAndTranslation(favePhrase, translation);
             }
             else {
 
@@ -237,11 +236,11 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
         private void removeFromFavePhrasePanel(FavoritePhrase favePhrase) {
             Log.d(TAG, "Country: " + favePhrase.getCountryName());
-            PhrasesSection countrySection = getCountrySection();
+            PhrasesSection phrasesSection = getPhrasesSection();
 
-            if (countrySection != null)
+            if (phrasesSection != null)
             {
-                boolean listEmpty = countrySection.removeFavePhraseAndTranslation(favePhrase);
+                boolean listEmpty = phrasesSection.removeFavePhraseAndTranslation(favePhrase);
                 if (listEmpty) {
                     // TODO: remove header
 
@@ -249,12 +248,12 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             }
         }
 
-        private PhrasesSection getCountrySection() {
+        private PhrasesSection getPhrasesSection() {
             for (int i = 0; i < favePhrasesAdapter.getSectionCount(); i++) {
-                PhrasesSection countrySection = (PhrasesSection) favePhrasesAdapter.getSection(i);
+                PhrasesSection phrasesSection = (PhrasesSection) favePhrasesAdapter.getSection(i);
 
                 // Section exists
-                if (countrySection.getCountryName().equals(countryName)) { return countrySection; }
+                if (phrasesSection.getCountryName().equals(countryName)) { return phrasesSection; }
             }
             return null;
         }
