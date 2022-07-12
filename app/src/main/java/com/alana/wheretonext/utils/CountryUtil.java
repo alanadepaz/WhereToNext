@@ -35,11 +35,8 @@ public class CountryUtil {
     }
 
     public static void getCountries(Context context, ArrayList<String> countryList, Map<String, String> countryAndLang) {
-        // TODO: Continue trying to parse database: https://www.bezkoder.com/java-android-read-json-file-assets-gson/
-
 
         String jsonFileString = CountryUtil.getJsonFromAssets(context.getApplicationContext(), "countries.json");
-        Log.i("data", jsonFileString);
 
         if (!jsonFileString.isEmpty()) {
             JSONArray countries = null;
