@@ -6,13 +6,13 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 @ParseClassName("FavoritePhrase")
-public class FavoritePhrase extends ParseObject {
+public class ParseFavoritePhrase extends ParseObject {
     public static final String KEY_USER = "user";
     public static final String KEY_COUNTRY_NAME = "countryName";
     public static final String KEY_LANGUAGE_CODE = "languageCode";
     public static final String KEY_FAVORITE_PHRASE = "favoritePhrase";
 
-    public FavoritePhrase() {
+    public ParseFavoritePhrase() {
         // Empty constructor
     }
 
@@ -30,7 +30,7 @@ public class FavoritePhrase extends ParseObject {
 
     public void setLanguageCode(String languageCode) { put(KEY_LANGUAGE_CODE, languageCode); }
 
-    public Phrase getFavoritePhrase() {
+    public ParsePhrase getFavoritePhrase() {
         try {
             return getParseObject(KEY_FAVORITE_PHRASE).fetchIfNeeded();
         } catch (ParseException e) {
