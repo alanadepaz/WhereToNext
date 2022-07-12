@@ -39,7 +39,6 @@ public class TranslationClient {
                 .build();
         try (Response response = client.newCall(request).execute()) {
 
-            Log.d(TAG, "Received response from server.");
             try {
                 JSONObject translationObject = new JSONObject(response.body().string());
                 JSONObject data = translationObject.getJSONObject("data");

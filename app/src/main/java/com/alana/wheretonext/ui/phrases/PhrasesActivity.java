@@ -8,11 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +37,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.alana.wheretonext.R;
@@ -137,14 +141,14 @@ public class PhrasesActivity extends AppCompatActivity {
             }
         });
 
+        phraseAdapter.setUpTTS();
+
         // Query phrases from Parse
         queryPhrases();
 
         // Query favorite Phrases too
         queryFavePhrases();
     }
-
-    // TODO: update sharedPrefs onResume(), and then also query the data again to know if something is favorited
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,6 +169,12 @@ public class PhrasesActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        phraseAdapter.onDestroy();
     }
 
     protected void queryPhrases() {
@@ -225,10 +235,17 @@ public class PhrasesActivity extends AppCompatActivity {
                 // Grab all translations
                 Translation translation = translationDao.getTranslation(phrase.getPhrase(), language);
                 Log.d(TAG, "Cached translation: " + translation);
-                if (translation == null){
-                    String translatedText = TranslationClient.getTranslation(phrase.getPhrase(), language);
-                    translation = new Translation(phrase.getPhrase(), language, translatedText);
-                    translationDao.insertTranslation(translation);
+                if (translation == null) {
+                    if (language != null) {
+                        String translatedText = TranslationClient.getTranslation(phrase.getPhrase(), language);
+
+                        translation = new Translation(phrase.getPhrase(), language, translatedText);
+                        translationDao.insertTranslation(translation);
+                    }
+                    else {
+                        String translatedText = "";
+                        translation = new Translation(phrase.getPhrase(), language, translatedText);
+                    }
                 }
 
                 Log.d(TAG, "Translation: " + translation.translation);

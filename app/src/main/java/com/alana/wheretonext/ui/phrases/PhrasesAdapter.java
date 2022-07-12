@@ -2,14 +2,20 @@ package com.alana.wheretonext.ui.phrases;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -17,9 +23,12 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieDrawable;
+import com.alana.wheretonext.MainApplication;
 import com.alana.wheretonext.data.models.CountrySection;
 import com.alana.wheretonext.data.db.models.FavoritePhrase;
 import com.alana.wheretonext.data.db.models.Phrase;
+import com.amrdeveloper.lottiedialog.LottieDialog;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -48,6 +57,8 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
     private SectionedRecyclerViewAdapter favePhrasesAdapter;
 
+    private static TextToSpeech tts;
+
     public PhrasesAdapter(Context context, List<Phrase> phrases, String countryName, String language, List<String> translations, SectionedRecyclerViewAdapter favePhrasesAdapter) {
         this.context = context;
         this.phrases = phrases;
@@ -55,6 +66,55 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
         this.language = language;
         this.translations = translations;
         this.favePhrasesAdapter = favePhrasesAdapter;
+    }
+
+    public void setUpTTS() {
+        // Set up Text To Speech method
+        tts = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    Locale currLocale;
+                    if (language != null) {
+                        currLocale = new Locale(language);
+                    }
+                    else {
+                        currLocale = Locale.getDefault();
+                    }
+
+                    int result = tts.setLanguage(currLocale);
+
+                    if (result == TextToSpeech.LANG_MISSING_DATA
+                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        openDialog();
+                        Log.e("TTS", "Language not supported");
+                    }
+                } else {
+                    Log.e("TTS", "Initialization failed");
+                }
+            }
+        });
+    }
+
+    private void openDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Proper audio pronunciation unavailable for this language. Would you like to try to download the language off the Google Play Store?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent installIntent = new Intent();
+                        installIntent.setAction(
+                                TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                        context.startActivity(installIntent);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @NonNull
@@ -82,16 +142,26 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
         return phrases;
     }
 
+    public void onDestroy() {
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView tvTranslatedText;
         public TextView tvPhrase;
+
+        private ImageButton btnAudio;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTranslatedText = itemView.findViewById(R.id.tvTranslatedText);
             tvPhrase = itemView.findViewById(R.id.tvPhrase);
             btnFavePhrase = itemView.findViewById(R.id.btnFavePhrase);
+            btnAudio = itemView.findViewById(R.id.btnAudio);
 
         }
 
@@ -109,8 +179,18 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                 tvTranslatedText.setGravity(Gravity.CENTER_VERTICAL);
             }
 
+            btnAudio.setEnabled(true);
+            btnAudio.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "Audio button clicked");
+                    speak();
+                }
+            });
+
             SharedPreferences sharedPrefs = context.getSharedPreferences("com.alana.wheretonext", Context.MODE_PRIVATE);
             Log.d(TAG, phrase.getPhrase() + countryName);
+
             btnFavePhrase.setChecked(sharedPrefs.getBoolean(phrase.getPhrase() + countryName, false));
 
             btnFavePhrase.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -248,6 +328,16 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                 if (countrySection.getCountryName().equals(countryName)) { return countrySection; }
             }
             return null;
+        }
+
+        private void speak() {
+            String text = tvTranslatedText.getText().toString();
+            float pitch = (float) 1;
+            float speed = (float) 1;
+
+            tts.setPitch(pitch);
+            tts.setSpeechRate(speed);
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }
     }
 }
