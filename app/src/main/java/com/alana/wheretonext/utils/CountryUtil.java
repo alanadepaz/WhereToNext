@@ -39,48 +39,27 @@ public class CountryUtil {
         String jsonFileString = CountryUtil.getJsonFromAssets(context.getApplicationContext(), "countries.json");
 
         if (!jsonFileString.isEmpty()) {
-            JSONArray countries = null;
-            try {
-                countries = new JSONArray(jsonFileString);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
             countryList.clear();
             countryAndLang.clear();
 
-            for (int i = 0; i < countries.length(); i++) {
-                JSONObject country = null;
-                try {
-                    country = countries.getJSONObject(i);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                String countryName = null;
-                try {
-                    countryName = country.getString("name");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            try {
+                JSONArray countries = new JSONArray(jsonFileString);
 
-                countryList.add(countryName);
+                for (int i = 0; i < countries.length(); i++) {
+                    JSONObject country = countries.getJSONObject(i);
+                    String countryName = country.getString("name");
+                    countryList.add(countryName);
 
-                JSONArray languages = null;
-                try {
-                    languages = country.getJSONArray("languages");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    JSONArray languages = country.getJSONArray("languages");
+
+                    // Grab the first language listed, as it is the most spoken OR official language
+                    String language = languages.getJSONObject(0).getString("iso639_1");
+
+                    countryAndLang.put(countryName, language);
                 }
-
-                // Grab the first language listed, as it is the most spoken OR official language
-                String language = null;
-                try {
-                    language = languages.getJSONObject(0).getString("iso639_1");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                //Log.i(TAG, "Country: " + countryName + ", Language: " + language);
-                countryAndLang.put(countryName, language);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }

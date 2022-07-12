@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieDrawable;
-import com.alana.wheretonext.data.network.CountriesClient;
 import com.alana.wheretonext.ui.phrases.PhrasesActivity;
 import com.alana.wheretonext.ui.login.LoginActivity;
 import com.alana.wheretonext.utils.CountryUtil;
@@ -215,13 +214,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     // Fetches the data from the RESTCountries API
     class fetchData extends Thread {
 
-        String data = "";
-
         @Override
         public void run() {
             super.run();
 
-            //CountriesClient.getCountries(data, countryList, countryAndLang);
             CountryUtil.getCountries(getApplicationContext(), countryList, countryAndLang);
         }
     }
