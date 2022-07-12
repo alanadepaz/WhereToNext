@@ -220,7 +220,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         public void run() {
             super.run();
 
-            CountryUtil.getCountries(getApplicationContext(), countryList, countryAndLang);
+            String jsonFileString = CountryUtil.getJsonFromAssets(getApplicationContext(), "countries.json");
+            CountryUtil.getCountries(getApplicationContext(), jsonFileString, countryList, countryAndLang);
         }
     }
 }
