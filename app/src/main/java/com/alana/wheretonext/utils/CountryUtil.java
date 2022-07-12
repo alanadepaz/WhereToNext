@@ -28,17 +28,15 @@ public class CountryUtil {
         return jsonString;
     }
 
-    public static void getCountries(Context context, ArrayList<String> countryList, Map<String, String> countryAndLang) {
+    public static void getCountries(Context context, String jsonStr, ArrayList<String> countryList, Map<String, String> countryAndLang) {
 
-        String jsonFileString = CountryUtil.getJsonFromAssets(context.getApplicationContext(), "countries.json");
-
-        if (!jsonFileString.isEmpty()) {
+        if (!jsonStr.isEmpty()) {
 
             countryList.clear();
             countryAndLang.clear();
 
             try {
-                JSONArray countries = new JSONArray(jsonFileString);
+                JSONArray countries = new JSONArray(jsonStr);
 
                 for (int i = 0; i < countries.length(); i++) {
                     JSONObject country = countries.getJSONObject(i);
