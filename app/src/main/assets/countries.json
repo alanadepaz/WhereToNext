@@ -2640,10 +2640,10 @@
     "name": "Philippines",
     "languages": [
       {
-        "iso639_1": "en",
-        "iso639_2": "eng",
-        "name": "English",
-        "nativeName": "English"
+        "iso639_1": "tl",
+        "iso639_2": "tgl",
+        "name": "Tagalog",
+        "nativeName": "Tagalog"
       }
     ],
     "independent": false
