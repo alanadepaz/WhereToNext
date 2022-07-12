@@ -5,8 +5,8 @@ import android.app.Application;
 import androidx.room.Room;
 
 import com.alana.wheretonext.data.db.WhereToNextDatabase;
-import com.alana.wheretonext.data.db.models.FavoritePhrase;
-import com.alana.wheretonext.data.db.models.Phrase;
+import com.alana.wheretonext.data.db.models.ParseFavoritePhrase;
+import com.alana.wheretonext.data.db.models.ParsePhrase;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -19,8 +19,8 @@ public class MainApplication extends Application {
         super.onCreate();
 
         // Register the parse model
-        ParseObject.registerSubclass(Phrase.class);
-        ParseObject.registerSubclass(FavoritePhrase.class);
+        ParseObject.registerSubclass(ParsePhrase.class);
+        ParseObject.registerSubclass(ParseFavoritePhrase.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("18XnKbXJL3jtpUHSCLag2AXqPbxQQkxeBWtAReHX")

@@ -6,10 +6,10 @@ import com.parse.ParseObject;
 import java.util.Locale;
 
 @ParseClassName("Phrase")
-public class Phrase extends ParseObject {
+public class ParsePhrase extends ParseObject {
     public static final String KEY_PHRASE = "phrase";
 
-    public Phrase() {
+    public ParsePhrase() {
         // Required empty constructor
     };
 

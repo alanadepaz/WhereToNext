@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieDrawable;
+import com.alana.wheretonext.service.UserService;
 import com.alana.wheretonext.ui.phrases.PhrasesActivity;
 import com.alana.wheretonext.ui.login.LoginActivity;
 import com.alana.wheretonext.utils.CountryUtil;
@@ -28,7 +29,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.ParseUser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,6 +51,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     // Widgets
     private AutoCompleteTextView mSearchText;
+
+    UserService userService = new UserService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +156,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.logoutButton) {
             // Compose icon has been selected
-            ParseUser.logOutInBackground();
+            userService.logoutUser();
 
             // Navigate to the compose activity
             Intent intent = new Intent(this, LoginActivity.class);

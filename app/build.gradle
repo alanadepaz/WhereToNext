@@ -89,7 +89,4 @@ dependencies {
     // For caching; Room for simple persistence with an ORM
     implementation "androidx.room:room-runtime:$roomVersion"
     annotationProcessor "androidx.room:room-compiler:$roomVersion"
-
-    // For reading JSON files
-    implementation 'com.google.code.gson:gson:2.8.5'
 }
