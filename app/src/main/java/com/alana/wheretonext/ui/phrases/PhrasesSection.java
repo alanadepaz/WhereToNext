@@ -1,7 +1,11 @@
 package com.alana.wheretonext.ui.phrases;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -9,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Locale;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
@@ -19,11 +24,14 @@ import com.alana.wheretonext.data.models.FavoritePhrase;
 public class PhrasesSection extends Section {
 
     public static final String TAG = "PhrasesSection";
+    private Context context;
     private List<FavoritePhrase> favePhrasesList;
     private List<String> translations;
     private String countryName;
+    private TextToSpeech tts;
+    private String language;
 
-    public PhrasesSection(@NonNull String countryName, @NonNull List<FavoritePhrase> favePhrasesList, List<String> translations) {
+    public PhrasesSection(@NonNull String countryName, @NonNull List<FavoritePhrase> favePhrasesList, List<String> translations, String language, TextToSpeech tts) {
         super(SectionParameters.builder()
                 .itemResourceId(R.layout.item_phrase)
                 .headerResourceId(R.layout.section_header)
@@ -32,6 +40,8 @@ public class PhrasesSection extends Section {
         this.favePhrasesList = favePhrasesList;
         this.translations = translations;
         this.countryName = countryName;
+        this.language = language;
+        this.tts = tts;
     }
 
     public void addFavePhraseAndTranslation(FavoritePhrase favoritePhrase, String translation) {
@@ -40,7 +50,6 @@ public class PhrasesSection extends Section {
     }
 
     public boolean removeFavePhraseAndTranslation(FavoritePhrase favoritePhrase) {
-        Log.d(TAG, "Length: " + favePhrasesList.size());
 
         int i = 0;
         for (i = 0; i < favePhrasesList.size(); i++) {
@@ -99,23 +108,49 @@ public class PhrasesSection extends Section {
         public TextView tvTranslatedText;
         public TextView tvPhrase;
         public ToggleButton btnFavePhrase;
+        public ImageButton btnAudio;
 
         public FavePhraseViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTranslatedText = itemView.findViewById(R.id.tvTranslatedText);
             tvPhrase = itemView.findViewById(R.id.tvPhrase);
             btnFavePhrase = itemView.findViewById(R.id.btnFavePhrase);
-
+            btnAudio = itemView.findViewById(R.id.btnAudio);
         }
 
         public void bind(FavoritePhrase favePhrase, String translation) {
-            Log.d(TAG, "In favorites bind method.");
             // Bind the post data to the view elements
             tvPhrase.setText(favePhrase.getFavoritePhrase());
             tvTranslatedText.setText(translation);
 
-            Log.d(TAG, favePhrase.getFavoritePhrase() + countryName);
             btnFavePhrase.setVisibility(View.GONE);
+
+            btnAudio.setEnabled(true);
+            btnAudio.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    speak(language);
+                }
+            });
+        }
+
+        private void speak(String language) {
+            String text = tvTranslatedText.getText().toString();
+            float pitch = (float) 1;
+            float speed = (float) 1;
+
+            Locale currLocale;
+            if (language != null) {
+                currLocale = new Locale(language);
+            } else {
+                currLocale = Locale.getDefault();
+            }
+
+            tts.setLanguage(currLocale);
+
+            tts.setPitch(pitch);
+            tts.setSpeechRate(speed);
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }
     }
 

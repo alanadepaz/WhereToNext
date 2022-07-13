@@ -31,6 +31,8 @@ import java.util.Locale;
 
 import com.alana.wheretonext.R;
 
+import org.w3c.dom.Text;
+
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHolder> {
@@ -52,62 +54,18 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
     private static TextToSpeech tts;
 
-    public PhrasesAdapter(Context context, List<String> phrases, String countryName, String language, List<String> translations, SectionedRecyclerViewAdapter favePhrasesAdapter) {
+    public PhrasesAdapter(Context context,
+                          List<String> phrases,
+                          String countryName,
+                          String language,
+                          List<String> translations,
+                          SectionedRecyclerViewAdapter favePhrasesAdapter) {
         this.context = context;
         this.phrases = phrases;
         this.countryName = countryName;
         this.language = language;
         this.translations = translations;
         this.favePhrasesAdapter = favePhrasesAdapter;
-    }
-
-    public void setUpTTS() {
-        // Set up Text To Speech method
-        tts = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    Locale currLocale;
-                    if (language != null) {
-                        currLocale = new Locale(language);
-                    }
-                    else {
-                        currLocale = Locale.getDefault();
-                    }
-
-                    int result = tts.setLanguage(currLocale);
-
-                    if (result == TextToSpeech.LANG_MISSING_DATA
-                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        openDialog();
-                        Log.e("TTS", "Language not supported");
-                    }
-                } else {
-                    Log.e("TTS", "Initialization failed");
-                }
-            }
-        });
-    }
-
-    private void openDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("Proper audio pronunciation unavailable for this language. Would you like to try to download the language off the Google Play Store?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent installIntent = new Intent();
-                        installIntent.setAction(
-                                TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-                        context.startActivity(installIntent);
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 
     @NonNull
@@ -139,6 +97,57 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             tts.stop();
             tts.shutdown();
         }
+    }
+
+    public TextToSpeech setUpTTS() {
+        // Set up Text To Speech method
+        tts = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    Locale currLocale;
+                    if (language != null) {
+                        currLocale = new Locale(language);
+                    }
+                    else {
+                        currLocale = Locale.getDefault();
+                    }
+
+                    int result = tts.setLanguage(currLocale);
+
+                    if (result == TextToSpeech.LANG_MISSING_DATA
+                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        openDialog();
+                        Log.e("TTS", "Language not supported");
+                    }
+                } else {
+                    Log.e("TTS", "Initialization failed");
+                }
+            }
+        });
+
+        return tts;
+    }
+
+    private void openDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Proper audio pronunciation unavailable for this language. Would you like to try to download the language off the Google Play Store?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent installIntent = new Intent();
+                        installIntent.setAction(
+                                TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                        context.startActivity(installIntent);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -230,7 +239,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                 List<String> faveTranslations = new ArrayList<>();
                 faveTranslations.add(translation);
 
-                favePhrasesAdapter.addSection(new PhrasesSection(countryName, favePhrases, faveTranslations));
+                favePhrasesAdapter.addSection(new PhrasesSection(countryName, favePhrases, faveTranslations, language, tts));
             }
         }
 

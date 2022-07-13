@@ -3,10 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
     android:layout_margin="16dp"
     android:orientation="vertical"
     android:gravity="bottom"
-    android:id="@+id/slidingUp">
+    android:id="@+id/slidingUp"
+    sothree:umanoOverlay="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,12 +27,14 @@
             android:layout_height="wrap_content"
             android:textSize="30dp"
             android:textStyle="bold"
+            android:textColor="@color/navy_blue"
             tools:text="United States" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:background="@drawable/drawable_round_background">
 
         <TextView
             android:id="@+id/tvFavoritePhraseTitle"
@@ -39,7 +43,8 @@
             android:textSize="30dp"
             android:textStyle="bold"
             android:text="@string/favorite_phrases"
-            android:layout_margin="10dp"/>
+            android:textColor="@color/navy_blue"
+            android:layout_margin="10dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvFavePhrases"

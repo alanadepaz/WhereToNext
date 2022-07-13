@@ -5,16 +5,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alana.wheretonext.MainApplication;
 import com.alana.wheretonext.data.models.FavoritePhrase;
@@ -30,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.alana.wheretonext.R;
@@ -47,6 +52,8 @@ public class PhrasesActivity extends AppCompatActivity {
     private TextView tvCountryName;
     protected PhrasesAdapter phraseAdapter;
     protected List<String> allPhrases;
+
+    private SlidingUpPanelLayout layout;
 
     // Initialize the array that will hold the translations
     protected List<String> allTranslations = Collections.synchronizedList(new ArrayList<String>());
@@ -66,6 +73,8 @@ public class PhrasesActivity extends AppCompatActivity {
     private PhraseService phraseService = new PhraseService();
     private UserService userService = new UserService();
 
+    TextToSpeech tts;
+
     public PhrasesActivity() {
         // Required empty public constructor
     }
@@ -73,6 +82,7 @@ public class PhrasesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.do_not_move, R.anim.do_not_move);
         setContentView(R.layout.activity_phrases);
 
         // Grab the country name and language from the MapActivity
@@ -86,7 +96,6 @@ public class PhrasesActivity extends AppCompatActivity {
         tvCountryName.setText(countryName);
 
         rvPhrases = findViewById(R.id.rvPhrases);
-        //btnToFavePhrases = findViewById(R.id.btnToFavePhrases);
 
         // Initialize the array that will hold phrases and create a PhrasesAdapter
         allPhrases = new ArrayList<>();
@@ -109,7 +118,27 @@ public class PhrasesActivity extends AppCompatActivity {
         rvFavePhrases.setLayoutManager(new LinearLayoutManager(context));
         rvFavePhrases.setAdapter(favePhraseAdapter);
 
-        SlidingUpPanelLayout layout = findViewById(R.id.slidingUp);
+        layout = findViewById(R.id.slidingUp);
+
+        // For circular animation
+        if (savedInstanceState == null) {
+            layout.setVisibility(View.INVISIBLE);
+
+            final ViewTreeObserver viewTreeObserver = layout.getViewTreeObserver();
+
+            if (viewTreeObserver.isAlive()) {
+                viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+                    @Override
+                    public void onGlobalLayout() {
+                        circularRevealActivity();
+                        layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+
+                });
+            }
+
+        }
 
         layout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
@@ -130,7 +159,7 @@ public class PhrasesActivity extends AppCompatActivity {
             }
         });
 
-        phraseAdapter.setUpTTS();
+        tts = phraseAdapter.setUpTTS();
 
         queryPhrases();
 
@@ -254,10 +283,10 @@ public class PhrasesActivity extends AppCompatActivity {
                 filteredFavePhrases = entry.getValue();
                 List<String> filteredTranslations = favoriteTranslationsMap.get(entry.getKey());
 
-                favePhraseAdapter.addSection(new PhrasesSection(entry.getKey(), filteredFavePhrases, filteredTranslations));
+                PhrasesSection newSection = new PhrasesSection(entry.getKey(), filteredFavePhrases, filteredTranslations, filteredFavePhrases.get(0).getLanguageCode(), tts);
+                favePhraseAdapter.addSection(newSection);
             }
         }
-        //phraseAdapter.notifyDataSetChanged();
         favePhraseAdapter.notifyDataSetChanged();
     }
 
@@ -314,6 +343,63 @@ public class PhrasesActivity extends AppCompatActivity {
 
         public Map<String, List<String>> getTranslationsMap() {
             return favoriteTranslationsMap;
+        }
+    }
+
+    private void circularRevealActivity() {
+        int cx = layout.getWidth() / 2;
+        int cy = layout.getWidth() / 2;
+
+        float finalRadius = Math.max(layout.getWidth(), layout.getHeight());
+
+        Animator circularReveal = ViewAnimationUtils.createCircularReveal(
+                layout,
+                cx,
+                cy,
+                0,
+                finalRadius);
+
+        circularReveal.setDuration(2000);
+        layout.setVisibility(View.VISIBLE);
+        circularReveal.start();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int cx = layout.getWidth() / 2;
+            int cy = layout.getBottom() / 2;
+
+            float finalRadius = Math.max(layout.getWidth(), layout.getHeight());
+            Animator circularReveal = ViewAnimationUtils.createCircularReveal(layout, cx, cy, finalRadius, 0);
+
+            circularReveal.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    layout.setVisibility(View.INVISIBLE);
+                    finish();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+            circularReveal.setDuration(2000);
+            circularReveal.start();
+        }
+        else {
+            super.onBackPressed();
         }
     }
 }
