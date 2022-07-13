@@ -150,7 +150,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // TODO: Change this so it doesn't only work for Spain
         try {
             String countryCode = getCountryCode(searchString).toLowerCase();
-            getResources().getIdentifier(countryCode, "raw","com.alana.wheretonext");
             GeoJsonLayer layer = new GeoJsonLayer(googleMap,
                     getResources().getIdentifier(countryCode, "raw","com.alana.wheretonext"),
                     getApplicationContext());
