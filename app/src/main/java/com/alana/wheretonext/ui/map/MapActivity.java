@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -31,12 +32,20 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.alana.wheretonext.R;
+import com.google.maps.android.data.Feature;
+import com.google.maps.android.data.geojson.GeoJsonLayer;
+import com.google.maps.android.data.geojson.GeoJsonPolygonStyle;
+
+import org.json.JSONException;
 
 // Implement OnMapReadyCallback.
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -116,6 +125,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     // For geolocating the searched location on the map and moving the camera
     private void geoLocate(GoogleMap googleMap) {
+        googleMap.clear();
+
         Log.d(TAG, "geoLocate: geolocating");
 
         String searchString = mSearchText.getText().toString();
@@ -132,9 +143,39 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Address address = list.get(0);
 
             Log.d(TAG, "geoLocate: found a location: " + address.toString());
-            //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
 
             moveCam(googleMap, new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM);
+        }
+
+        // TODO: Change this so it doesn't only work for Spain
+        try {
+            String countryCode = getCountryCode(searchString).toLowerCase();
+            getResources().getIdentifier(countryCode, "raw","com.alana.wheretonext");
+            GeoJsonLayer layer = new GeoJsonLayer(googleMap,
+                    getResources().getIdentifier(countryCode, "raw","com.alana.wheretonext"),
+                    getApplicationContext());
+
+            GeoJsonPolygonStyle style = layer.getDefaultPolygonStyle();
+            style.setFillColor(Color.CYAN);
+            style.setStrokeColor(Color.CYAN);
+            style.setStrokeWidth(1F);
+
+            layer.addLayerToMap();
+
+            if (layer.isLayerOnMap()) {
+                layer.setOnFeatureClickListener(new GeoJsonLayer.GeoJsonOnFeatureClickListener() {
+                    @Override
+                    public void onFeatureClick(Feature feature) {
+                        goPhrasesActivity(searchString);
+                        layer.removeLayerFromMap();
+                    }
+                });
+            }
+
+        } catch (IOException ex) {
+            Log.e("IOException", ex.getLocalizedMessage());
+        } catch (JSONException ex) {
+            Log.e("JSONException", ex.getLocalizedMessage());
         }
     }
 
@@ -211,6 +252,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         listAdapter.addAll(countryList);
         searchText.setAdapter(listAdapter);
+    }
+
+    public String getCountryCode(String countryName) {
+
+        // Get all country codes in a string array.
+        String[] isoCountryCodes = Locale.getISOCountries();
+        String countryCode = "";
+        // Iterate through all country codes:
+        for (String code : isoCountryCodes) {
+            // Create a locale using each country code
+            Locale locale = new Locale("", code);
+            // Get country name for each code.
+            String name = locale.getDisplayCountry();
+            if(name.equals(countryName))
+            {
+                countryCode = code;
+                break;
+            }
+        }
+        return countryCode;
     }
 
     // Fetches the data from the RESTCountries API

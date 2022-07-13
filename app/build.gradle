@@ -67,6 +67,7 @@ dependencies {
     // For Google maps
     implementation "com.google.android.gms:play-services-location:20.0.0"
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.maps.android:android-maps-utils:2.2.2'
 
     // For swipe refresh
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
