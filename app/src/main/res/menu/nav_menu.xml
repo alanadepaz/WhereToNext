@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="USER" >
+    <item android:title="APP NAVIGATION" >
         <menu>
-            <item android:title="Favorite Phrases"
-                android:icon="@drawable/ic_heart" />
+            <item android:title="Map"
+                android:id="@+id/nav_map"
+                android:icon="@drawable/ic_location_pin" />
         </menu>
     </item>
 
     <item android:title="NETWORK" >
         <menu>
             <item android:title="Friends"
+                android:id="@+id/nav_friends"
                 android:icon="@drawable/ic_network" />
             <item android:title="Friend Requests"
+                android:id="@+id/nav_friendRequests"
                 android:icon="@drawable/ic_add_friend" />
             <item android:title="Share"
+                android:id="@+id/nav_share"
                 android:icon="@drawable/ic_share" />
         </menu>
     </item>
@@ -22,8 +26,10 @@
     <item android:title="LOG OUT" >
         <menu>
             <item android:title="Settings"
+                android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings" />
             <item android:title="Log Out"
+                android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_suitcase" />
         </menu>
     </item>

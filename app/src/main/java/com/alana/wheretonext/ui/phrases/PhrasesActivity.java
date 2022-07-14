@@ -1,7 +1,10 @@
 package com.alana.wheretonext.ui.phrases;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +23,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
+import com.alana.wheretonext.MainActivity;
 import com.alana.wheretonext.MainApplication;
 import com.alana.wheretonext.data.models.FavoritePhrase;
 import com.alana.wheretonext.service.PhraseService;
@@ -38,12 +42,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.alana.wheretonext.R;
+import com.alana.wheretonext.ui.map.MapFragment;
+import com.google.android.material.navigation.NavigationView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 
-public class PhrasesActivity extends AppCompatActivity {
+public class PhrasesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String TAG = "PhrasesActivity";
 
@@ -74,6 +80,11 @@ public class PhrasesActivity extends AppCompatActivity {
     private UserService userService = new UserService();
 
     TextToSpeech tts;
+
+    // For tool bar and side menu
+    private DrawerLayout phrasesDrawerLayout;
+    private NavigationView phrasesNavView;
+    private Toolbar phrasesToolbar;
 
     public PhrasesActivity() {
         // Required empty public constructor
@@ -164,25 +175,25 @@ public class PhrasesActivity extends AppCompatActivity {
         queryPhrases();
 
         queryFavePhrases();
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+        // For toolbar and navigation side menu
+        phrasesToolbar = findViewById(R.id.phrasesToolbar);
+        setSupportActionBar(phrasesToolbar);
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.logoutButton) {
-            userService.logoutUser();
+        phrasesDrawerLayout = findViewById(R.id.phrasesDrawerLayout);
+        phrasesNavView = findViewById(R.id.phrasesNavView);
 
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                phrasesDrawerLayout,
+                phrasesToolbar,
+                R.string.openNavDrawer,
+                R.string.closeNavDrawer
+        );
+
+        phrasesDrawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        phrasesNavView.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -212,6 +223,30 @@ public class PhrasesActivity extends AppCompatActivity {
         thread.start();
         thread.join();
         allTranslations = fetchData.getTranslations();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_map:
+                Intent mapIntent = new Intent(this, MainActivity.class);
+                startActivity(mapIntent);
+
+                break;
+            case R.id.nav_logout:
+                userService.logoutUser();
+
+                Intent logoutIntent = new Intent(this, LoginActivity.class);
+                startActivity(logoutIntent);
+                finish();
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 
     // Fetches the data from the Cloud Translation API
