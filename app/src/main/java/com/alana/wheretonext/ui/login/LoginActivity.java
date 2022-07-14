@@ -11,9 +11,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.alana.wheretonext.MainActivity;
 import com.alana.wheretonext.exceptions.UserException;
 import com.alana.wheretonext.service.UserService;
-import com.alana.wheretonext.ui.map.MapActivity;
 import com.alana.wheretonext.ui.signup.SignUpActivity;
 
 import com.alana.wheretonext.R;
@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (userService.isLoggedIn()) {
-            goMapActivity();
+            goMainActivity();
         }
 
         ivIcon = findViewById(R.id.ivIcon);
@@ -71,15 +71,15 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             userService.loginUser(username, password);
-            goMapActivity();
+            goMainActivity();
         } catch (UserException e) {
             Toast.makeText(LoginActivity.this, "Issue with login.", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Issue with login", e);
         }
     }
 
-    private void goMapActivity() {
-        Intent i = new Intent(this, MapActivity.class);
+    private void goMainActivity() {
+        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();   // Finishing login activity once we've done the navigation
     }
