@@ -34,12 +34,12 @@
 
     <ToggleButton
         android:id="@+id/btnFavePhrase"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="0dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:layout_toStartOf="@+id/btnAudio"
         android:background="@drawable/toggle_selector"
@@ -49,14 +49,14 @@
 
     <ImageButton
         android:id="@+id/btnAudio"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/ic_audio"
+        android:background="@drawable/ic_megaphone"
         android:backgroundTint="@color/navy_blue"
         android:gravity="center_vertical"
         android:text="" />

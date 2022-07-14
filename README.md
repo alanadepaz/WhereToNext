@@ -198,3 +198,9 @@ OPTIONAL: List endpoints if using existing API:
 Attributions:
 Used two types of Star Icons for the Favorites functionality:
 [Star icons created by Pixel perfect - Flaticon](https://www.flaticon.com/free-icons/star "star icons")
+
+Used icons for navigation side menu:
+[User icons created by Freepik](https://www.flaticon.com/free-icons/user)
+
+Settings icon:
+[Settings icons created by Ilham Fitrotul Hayat - Flaticon](https://www.flaticon.com/free-icons/settings)
