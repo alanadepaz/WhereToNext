@@ -359,7 +359,7 @@ public class PhrasesActivity extends AppCompatActivity {
                 0,
                 finalRadius);
 
-        circularReveal.setDuration(2000);
+        circularReveal.setDuration(1000);
         layout.setVisibility(View.VISIBLE);
         circularReveal.start();
     }
@@ -395,7 +395,7 @@ public class PhrasesActivity extends AppCompatActivity {
 
                 }
             });
-            circularReveal.setDuration(2000);
+            circularReveal.setDuration(1000);
             circularReveal.start();
         }
         else {

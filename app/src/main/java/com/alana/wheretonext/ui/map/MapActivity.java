@@ -1,7 +1,10 @@
 package com.alana.wheretonext.ui.map;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -41,6 +44,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.alana.wheretonext.R;
+import com.google.android.material.navigation.NavigationView;
 import com.google.maps.android.data.Feature;
 import com.google.maps.android.data.geojson.GeoJsonLayer;
 import com.google.maps.android.data.geojson.GeoJsonPolygonStyle;
@@ -48,10 +52,13 @@ import com.google.maps.android.data.geojson.GeoJsonPolygonStyle;
 import org.json.JSONException;
 
 // Implement OnMapReadyCallback.
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
     public static final String TAG = "MapActivity";
     public static final float DEFAULT_ZOOM = 4f;
+
+    private DrawerLayout drawerLayout;
+    private NavigationView navView;
 
     // For fetching country data
     ArrayList<String> countryList;
@@ -59,6 +66,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     ArrayAdapter<String> listAdapter;
 
     // Widgets
+    private Toolbar toolbar;
     private AutoCompleteTextView mSearchText;
 
     UserService userService = new UserService();
@@ -74,6 +82,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navView = findViewById(R.id.navView);
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.openNavDrawer,
+                R.string.closeNavDrawer
+        );
+
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        navView.setNavigationItemSelectedListener(this);
 
         mSearchText = (AutoCompleteTextView) findViewById(R.id.input_search);
 
@@ -271,6 +297,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
         return countryCode;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 
     // Fetches the data from the RESTCountries API
