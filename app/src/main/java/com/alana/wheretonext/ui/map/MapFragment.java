@@ -13,24 +13,17 @@ import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.lottie.LottieDrawable;
 import com.alana.wheretonext.R;
-import com.alana.wheretonext.service.UserService;
-import com.alana.wheretonext.ui.login.LoginActivity;
 import com.alana.wheretonext.ui.phrases.PhrasesActivity;
 import com.alana.wheretonext.utils.CountryUtil;
-import com.amrdeveloper.lottiedialog.LottieDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -66,9 +59,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     // Widgets
     private AutoCompleteTextView mSearchText;
-
-    UserService userService = new UserService();
-
 
     public MapFragment() {
         // Required empty public constructor

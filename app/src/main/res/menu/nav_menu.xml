@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="APP NAVIGATION" >
+    <item android:title="@string/app_navigation" >
         <menu>
-            <item android:title="Map"
+            <item android:title="@string/map"
                 android:id="@+id/nav_map"
                 android:icon="@drawable/ic_location_pin" />
         </menu>
     </item>
 
-    <item android:title="NETWORK" >
+    <item android:title="@string/network" >
         <menu>
-            <item android:title="Friends"
+            <item android:title="@string/friends"
                 android:id="@+id/nav_friends"
                 android:icon="@drawable/ic_network" />
-            <item android:title="Friend Requests"
+            <item android:title="@string/friend_requests"
                 android:id="@+id/nav_friendRequests"
                 android:icon="@drawable/ic_add_friend" />
-            <item android:title="Share"
+            <item android:title="@string/share"
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_share" />
         </menu>
     </item>
 
-    <item android:title="LOG OUT" >
+    <item android:title="@string/other_actions" >
         <menu>
-            <item android:title="Settings"
+            <item android:title="@string/settings"
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings" />
-            <item android:title="Log Out"
+            <item android:title="@string/log_out"
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_suitcase" />
         </menu>

@@ -7,4 +7,12 @@
 
     <string name="openNavDrawer">Navigation Drawer Open</string>
     <string name="closeNavDrawer">Navigation Drawer Close</string>
+    <string name="app_navigation">APP NAVIGATION</string>
+    <string name="map">Map</string>
+    <string name="network">NETWORK</string>
+    <string name="friends">Friends</string>
+    <string name="friend_requests">Friend Requests</string>
+    <string name="share">Share</string>
+    <string name="other_actions">OTHER ACTIONS</string>
+    <string name="settings">Settings</string>
 </resources>

@@ -56,6 +56,8 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapt
 public class PhrasesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String TAG = "PhrasesActivity";
+    public static final int MAP_FRAGMENT = 0;
+    public static final int SETTINGS_FRAGMENT = 1;
 
     private Context context;
     private RecyclerView rvPhrases;
@@ -263,9 +265,16 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
         switch (item.getItemId()) {
             case R.id.nav_map:
                 Intent mapIntent = new Intent(this, MainActivity.class);
+                mapIntent.putExtra("fragmentToLoad", MAP_FRAGMENT);
                 startActivity(mapIntent);
-
                 break;
+
+            case R.id.nav_settings:
+                Intent settingsIntent = new Intent(this, MainActivity.class);
+                settingsIntent.putExtra("fragmentToLoad", SETTINGS_FRAGMENT);
+                startActivity(settingsIntent);
+                break;
+
             case R.id.nav_logout:
                 userService.logoutUser();
 
