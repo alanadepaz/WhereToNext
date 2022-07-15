@@ -152,12 +152,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 2);
-        calendar.set(Calendar.MINUTE, 50);
+        calendar.set(Calendar.HOUR_OF_DAY, 4);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 1);
 
+        long INTERVAL_WEEK = AlarmManager.INTERVAL_DAY*7;
         manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, pendingIntent);
+                INTERVAL_WEEK, pendingIntent);
     }
 
     @Override
