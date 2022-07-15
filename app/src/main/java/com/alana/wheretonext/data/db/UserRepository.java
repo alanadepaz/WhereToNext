@@ -3,7 +3,9 @@ package com.alana.wheretonext.data.db;
 import android.util.Log;
 
 import com.alana.wheretonext.exceptions.UserException;
+import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 public class UserRepository {
@@ -40,5 +42,17 @@ public class UserRepository {
     public void logoutUser() {
         Log.i(TAG, "Attempting to log out user");
         ParseUser.logOutInBackground();
+    }
+
+    public String getUserUsername() {
+        return ParseUser.getCurrentUser().getUsername();
+    }
+
+    public String getUserEmail() {
+        return ParseUser.getCurrentUser().getEmail();
+    }
+
+    public ParseFile getProfileImage() {
+        return ParseUser.getCurrentUser().getParseFile("profileImage");
     }
 }

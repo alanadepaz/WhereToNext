@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alana.wheretonext.MainActivity;
@@ -85,6 +86,10 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
     private DrawerLayout phrasesDrawerLayout;
     private NavigationView phrasesNavView;
     private Toolbar phrasesToolbar;
+
+    private ImageView ivProfileImage;
+    private TextView tvUsername;
+    private TextView tvEmail;
 
     public PhrasesActivity() {
         // Required empty public constructor
@@ -176,12 +181,21 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
 
         queryFavePhrases();
 
-        // For toolbar and navigation side menu
         phrasesToolbar = findViewById(R.id.phrasesToolbar);
         setSupportActionBar(phrasesToolbar);
 
         phrasesDrawerLayout = findViewById(R.id.phrasesDrawerLayout);
         phrasesNavView = findViewById(R.id.phrasesNavView);
+
+        // For toolbar and navigation side menu
+        View headerView = phrasesNavView.getHeaderView(0);
+
+        ivProfileImage = headerView.findViewById(R.id.ivProfileImage);
+        tvUsername = headerView.findViewById(R.id.tvUsername);
+        tvEmail = headerView.findViewById(R.id.tvEmail);
+
+        tvUsername.setText(userService.getUserUsername());
+        tvEmail.setText(userService.getUserEmail());
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
