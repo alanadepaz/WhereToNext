@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="SETTINGS" >
+        <menu>
+            <item android:title="Edit Profile"
+                android:id="@+id/settings_edit_profile"
+                android:icon="@drawable/ic_user" />
+            <item android:title="Notifications"
+                android:id="@+id/settings_notifications"
+                android:icon="@drawable/ic_notification" />
+            <item android:title="Delete Account"
+                android:id="@+id/settings_delete_account"
+                android:icon="@drawable/ic_sad_face" />
+        </menu>
+    </item>
+</menu>

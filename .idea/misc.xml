@@ -20,16 +20,19 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.13596954345703122" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_map.xml" value="0.20224719101123595" />
+        <entry key="app/src/main/res/layout/activity_notification_settings.xml" value="0.34991048177083334" />
         <entry key="app/src/main/res/layout/activity_phrases.xml" value="0.21113128662109376" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_favorite_phrases.xml" value="0.11005434782608696" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.1734375" />
+        <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_phrase.xml" value="0.3135618348052536" />
         <entry key="app/src/main/res/layout/nav_header_layout.xml" value="0.29179941813151045" />
         <entry key="app/src/main/res/layout/section_header.xml" value="0.15353260869565216" />
         <entry key="app/src/main/res/menu/menu_main.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/menu/menu_search.xml" value="0.1648148148148148" />
         <entry key="app/src/main/res/menu/nav_menu.xml" value="0.16974358974358975" />
+        <entry key="app/src/main/res/menu/settings_menu.xml" value="0.17239583333333333" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_wtn_round.xml" value="0.1645" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_wtn_round_round.xml" value="0.1645" />
         <entry key="app/src/main/res/xml/searchable.xml" value="0.19928131103515628" />

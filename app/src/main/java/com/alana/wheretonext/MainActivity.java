@@ -7,9 +7,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,16 +22,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieDrawable;
+import com.alana.wheretonext.service.NotificationReceiver;
+import com.alana.wheretonext.service.NotificationService;
 import com.alana.wheretonext.service.UserService;
 import com.alana.wheretonext.ui.login.LoginActivity;
 import com.alana.wheretonext.ui.map.MapFragment;
+import com.alana.wheretonext.ui.settings.SettingsFragment;
 import com.amrdeveloper.lottiedialog.LottieDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.material.navigation.NavigationView;
 import com.parse.ParseFile;
 
+import java.util.Calendar;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final int MAP_FRAGMENT = 0;
+    public static final int SETTINGS_FRAGMENT = 1;
 
     private DrawerLayout drawerLayout;
     private NavigationView navView;
@@ -37,11 +50,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView tvEmail;
 
     private UserService userService = new UserService();
+    private NotificationService notificationService = new NotificationService("NotificationService", this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        startNotificationReceiver();
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -89,26 +105,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Set default selection
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapFragment()).commit();
 
-        Button btnExitDialog = new Button(this);
+        // Load the right activity from the Phrases page
+        if (getIntent().getExtras() != null) {
+            int intentFragment = getIntent().getExtras().getInt("fragmentToLoad");
 
-        LottieDialog welcomeDialog = new LottieDialog(this)
-                .setAnimation(R.raw.yellow_passport_anim)
-                .setAnimationRepeatCount(LottieDrawable.INFINITE)
-                .setAutoPlayAnimation(true)
-                .setMessage("Explore countries of interest and learn the phrases you need to know before you go! You ready?")
-                .addActionButton(btnExitDialog);
-
-        welcomeDialog.show();
-
-        btnExitDialog.setText("Yes! Where to Next?");
-        btnExitDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (welcomeDialog.isShowing()) {
-                    welcomeDialog.dismiss();
-                }
+            switch (intentFragment) {
+                case MAP_FRAGMENT:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            new MapFragment()).commit();
+                    break;
+                case SETTINGS_FRAGMENT:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            new SettingsFragment()).commit();
+                    break;
             }
-        });
+        } else {
+            Button btnExitDialog = new Button(this);
+
+            LottieDialog welcomeDialog = new LottieDialog(this)
+                    .setAnimation(R.raw.yellow_passport_anim)
+                    .setAnimationRepeatCount(LottieDrawable.INFINITE)
+                    .setAutoPlayAnimation(true)
+                    .setMessage("Explore countries of interest and learn the phrases you need to know before you go! You ready?")
+                    .addActionButton(btnExitDialog);
+
+            welcomeDialog.show();
+
+            btnExitDialog.setText("Yes! Where to Next?");
+            btnExitDialog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (welcomeDialog.isShowing()) {
+                        welcomeDialog.dismiss();
+                    }
+                }
+            });
+        }
+    }
+
+    public void startNotificationReceiver() {
+
+        Intent alarmIntent = new Intent(this, NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 2);
+        calendar.set(Calendar.MINUTE, 50);
+        calendar.set(Calendar.SECOND, 1);
+
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
     @Override
@@ -118,13 +167,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new MapFragment()).commit();
                 break;
+            case R.id.nav_settings:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new SettingsFragment()).commit();
+                break;
             case R.id.nav_logout:
                 userService.logoutUser();
 
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 finish();
+                break;
         }
+
+        drawerLayout.closeDrawers();
         return true;
     }
 
@@ -142,15 +198,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public Bitmap cropToSquare(Bitmap bitmap){
-        int width  = bitmap.getWidth();
+    public Bitmap cropToSquare(Bitmap bitmap) {
+        int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         int newWidth = (height > width) ? width : height;
-        int newHeight = (height > width)? height - ( height - width) : height;
+        int newHeight = (height > width) ? height - (height - width) : height;
         int cropW = (width - height) / 2;
-        cropW = (cropW < 0)? 0: cropW;
+        cropW = (cropW < 0) ? 0 : cropW;
         int cropH = (height - width) / 2;
-        cropH = (cropH < 0)? 0: cropH;
+        cropH = (cropH < 0) ? 0 : cropH;
         Bitmap cropImg = Bitmap.createBitmap(bitmap, cropW, cropH, newWidth, newHeight);
 
         return cropImg;
