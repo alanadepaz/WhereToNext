@@ -44,7 +44,10 @@ import java.util.Map;
 
 import com.alana.wheretonext.R;
 import com.alana.wheretonext.ui.map.MapFragment;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.material.navigation.NavigationView;
+import com.parse.ParseFile;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
@@ -196,6 +199,22 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
 
         tvUsername.setText(userService.getUserUsername());
         tvEmail.setText(userService.getUserEmail());
+
+        // Default profile image
+        Glide.with(PhrasesActivity.this)
+                .load(R.mipmap.default_profile_round)
+                .into(ivProfileImage);
+
+        ParseFile image = userService.getProfileImage();
+
+        if (image != null) {
+            Glide.with(PhrasesActivity.this)
+                    .load(image.getUrl())
+                    .transform(new RoundedCorners(100))
+                    .placeholder(R.mipmap.default_profile_round)
+                    .error(R.mipmap.default_profile_round)
+                    .into(ivProfileImage);
+        }
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
