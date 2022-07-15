@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alana.wheretonext.MainActivity;
@@ -43,7 +44,10 @@ import java.util.Map;
 
 import com.alana.wheretonext.R;
 import com.alana.wheretonext.ui.map.MapFragment;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.material.navigation.NavigationView;
+import com.parse.ParseFile;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
@@ -85,6 +89,10 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
     private DrawerLayout phrasesDrawerLayout;
     private NavigationView phrasesNavView;
     private Toolbar phrasesToolbar;
+
+    private ImageView ivProfileImage;
+    private TextView tvUsername;
+    private TextView tvEmail;
 
     public PhrasesActivity() {
         // Required empty public constructor
@@ -176,12 +184,37 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
 
         queryFavePhrases();
 
-        // For toolbar and navigation side menu
         phrasesToolbar = findViewById(R.id.phrasesToolbar);
         setSupportActionBar(phrasesToolbar);
 
         phrasesDrawerLayout = findViewById(R.id.phrasesDrawerLayout);
         phrasesNavView = findViewById(R.id.phrasesNavView);
+
+        // For toolbar and navigation side menu
+        View headerView = phrasesNavView.getHeaderView(0);
+
+        ivProfileImage = headerView.findViewById(R.id.ivProfileImage);
+        tvUsername = headerView.findViewById(R.id.tvUsername);
+        tvEmail = headerView.findViewById(R.id.tvEmail);
+
+        tvUsername.setText(userService.getUserUsername());
+        tvEmail.setText(userService.getUserEmail());
+
+        // Default profile image
+        Glide.with(PhrasesActivity.this)
+                .load(R.mipmap.default_profile_round)
+                .into(ivProfileImage);
+
+        ParseFile image = userService.getProfileImage();
+
+        if (image != null) {
+            Glide.with(PhrasesActivity.this)
+                    .load(image.getUrl())
+                    .transform(new RoundedCorners(100))
+                    .placeholder(R.mipmap.default_profile_round)
+                    .error(R.mipmap.default_profile_round)
+                    .into(ivProfileImage);
+        }
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
