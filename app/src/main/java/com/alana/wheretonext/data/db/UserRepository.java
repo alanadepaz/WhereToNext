@@ -1,12 +1,13 @@
 package com.alana.wheretonext.data.db;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.alana.wheretonext.exceptions.UserException;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 public class UserRepository {
     public static final String TAG = "UserRepository";
@@ -32,6 +33,7 @@ public class UserRepository {
         newUser.put("username", username);
         newUser.put("password", password);
         newUser.put("email", email);
+
         try {
             newUser.signUp();
         } catch (ParseException parseException) {

@@ -64,6 +64,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 } catch (UserException e) {
                     Log.e(TAG, "Could not save user: " + e);
+                    Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
