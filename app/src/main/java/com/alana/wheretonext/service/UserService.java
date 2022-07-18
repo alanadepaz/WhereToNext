@@ -32,5 +32,5 @@ public class UserService {
 
     public String getUserEmail() { return userRepository.getUserEmail(); }
 
-    public ParseFile getProfileImage() { return userRepository.getProfileImage(); }
+    public String getProfileImageURL() { return userRepository.getProfileImageURL(); }
 }

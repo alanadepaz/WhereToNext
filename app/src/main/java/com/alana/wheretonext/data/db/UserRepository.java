@@ -52,7 +52,12 @@ public class UserRepository {
         return ParseUser.getCurrentUser().getEmail();
     }
 
-    public ParseFile getProfileImage() {
-        return ParseUser.getCurrentUser().getParseFile("profileImage");
+    public String getProfileImageURL() {
+        ParseFile image = ParseUser.getCurrentUser().getParseFile("profileImage");
+
+        if (image != null) {
+            return image.getUrl();
+        }
+        return null;
     }
 }
