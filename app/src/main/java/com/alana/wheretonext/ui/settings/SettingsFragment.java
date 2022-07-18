@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.alana.wheretonext.R;
 import com.alana.wheretonext.ui.login.LoginActivity;
 import com.alana.wheretonext.ui.map.MapFragment;
+import com.alana.wheretonext.ui.phrases.PhrasesActivity;
 import com.google.android.material.navigation.NavigationView;
 
 /**
@@ -27,6 +28,7 @@ import com.google.android.material.navigation.NavigationView;
  */
 public class SettingsFragment extends Fragment {
 
+    private static final String TAG = "SettingsFragment";
     NavigationView settingsMenu;
 
     public SettingsFragment() {
@@ -50,6 +52,8 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -64,6 +68,19 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         settingsMenu = view.findViewById(R.id.settings_menu);
+
+        settingsMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.settings_notifications:
+                        Intent intent = new Intent(getContext(), NotificationSettingsActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     @Override
