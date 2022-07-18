@@ -11,10 +11,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -79,11 +77,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .load(R.mipmap.default_profile_round)
                 .into(ivProfileImage);
 
-        ParseFile image = userService.getProfileImage();
+        String imageURL = userService.getProfileImageURL();
 
-        if (image != null) {
+        if (imageURL != null) {
             Glide.with(MainActivity.this)
-                    .load(image.getUrl())
+                    .load(imageURL)
                     .transform(new RoundedCorners(100))
                     .placeholder(R.mipmap.default_profile_round)
                     .error(R.mipmap.default_profile_round)
@@ -197,19 +195,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
-    }
-
-    public Bitmap cropToSquare(Bitmap bitmap) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        int newWidth = (height > width) ? width : height;
-        int newHeight = (height > width) ? height - (height - width) : height;
-        int cropW = (width - height) / 2;
-        cropW = (cropW < 0) ? 0 : cropW;
-        int cropH = (height - width) / 2;
-        cropH = (cropH < 0) ? 0 : cropH;
-        Bitmap cropImg = Bitmap.createBitmap(bitmap, cropW, cropH, newWidth, newHeight);
-
-        return cropImg;
     }
 }
