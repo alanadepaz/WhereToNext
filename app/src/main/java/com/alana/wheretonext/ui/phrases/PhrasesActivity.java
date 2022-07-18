@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.Animator;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,14 +23,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alana.wheretonext.MainActivity;
-import com.alana.wheretonext.MainApplication;
 import com.alana.wheretonext.data.models.FavoritePhrase;
+import com.alana.wheretonext.data.network.FetchFaveTranslationData;
+import com.alana.wheretonext.data.network.FetchTranslationData;
 import com.alana.wheretonext.service.PhraseService;
 import com.alana.wheretonext.service.UserService;
 import com.alana.wheretonext.ui.login.LoginActivity;
-import com.alana.wheretonext.data.db.models.Translation;
-import com.alana.wheretonext.data.network.TranslationClient;
-import com.alana.wheretonext.data.db.TranslationDao;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +52,6 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
     public static final int MAP_FRAGMENT = 0;
     public static final int SETTINGS_FRAGMENT = 1;
 
-    private Context context;
     private RecyclerView rvPhrases;
     private TextView tvCountryName;
     protected PhrasesAdapter phraseAdapter;
@@ -132,7 +128,7 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
         favoriteTranslationsMap = new HashMap<>();
 
         rvFavePhrases = findViewById(R.id.rvFavePhrases);
-        rvFavePhrases.setLayoutManager(new LinearLayoutManager(context));
+        rvFavePhrases.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         rvFavePhrases.setAdapter(favePhraseAdapter);
 
         layout = findViewById(R.id.slidingUp);
@@ -249,7 +245,7 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
     }
 
     private void notifyPhrases() throws InterruptedException {
-        FetchData fetchData = new FetchData();
+        FetchTranslationData fetchData = new FetchTranslationData(getApplicationContext(), allPhrases, allTranslations, language);
         Thread thread = new Thread(fetchData);
         thread.start();
         thread.join();
@@ -285,46 +281,6 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
-    }
-
-    // Fetches the data from the Cloud Translation API
-    class FetchData implements Runnable {
-
-        PhrasesActivity phrasesActivity;
-
-        public FetchData() {
-            // Required empty constructor
-        }
-
-        @Override
-        public void run() {
-            final TranslationDao translationDao = ((MainApplication) getApplicationContext()).getWhereToNextDB().translationDao();
-
-            // TODO: Optimize this by sending in multiple phrases at once rather than with a for loop
-            for (String phrase : allPhrases) {
-                // Grab all translations
-                Translation translation = translationDao.getTranslation(phrase, language);
-                Log.d(TAG, "Cached translation: " + translation);
-                if (translation == null) {
-                    if (language != null) {
-                        String translatedText = TranslationClient.getTranslation(phrase, language);
-
-                        translation = new Translation(phrase, language, translatedText);
-                        translationDao.insertTranslation(translation);
-                    } else {
-                        String translatedText = "";
-                        translation = new Translation(phrase, language, translatedText);
-                    }
-                }
-
-                Log.d(TAG, "Translation: " + translation.translation);
-                allTranslations.add(translation.translation);
-            }
-        }
-
-        public List<String> getTranslations() {
-            return allTranslations;
-        }
     }
 
     // FOR FAVORITE PHRASES PANEL
@@ -382,41 +338,11 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
     }
 
     private void notifyFavePhrases() throws InterruptedException {
-        FetchFaveData fetchFaveData = new FetchFaveData();
+        FetchFaveTranslationData fetchFaveData = new FetchFaveTranslationData(getApplicationContext(), allFavePhrases, allTranslations, language, favoriteTranslationsMap);
         Thread thread = new Thread(fetchFaveData);
         thread.start();
         thread.join();
         favoriteTranslationsMap = fetchFaveData.getTranslationsMap();
-    }
-
-    // Fetches the data from the Cloud Translation API
-    class FetchFaveData implements Runnable {
-
-        public FetchFaveData() {
-            // Required empty constructor
-        }
-
-        @Override
-        public void run() {
-            //super.run();
-
-            for (FavoritePhrase favePhrase : allFavePhrases) {
-                // Grab all translations
-                String translatedText = TranslationClient.getTranslation(favePhrase.getFavoritePhrase(), favePhrase.getLanguageCode());
-
-                List<String> faveCountryTranslations = favoriteTranslationsMap.get(favePhrase.getCountryName());
-
-                if (faveCountryTranslations == null) {
-                    faveCountryTranslations = new ArrayList<>();
-                    favoriteTranslationsMap.put(favePhrase.getCountryName(), faveCountryTranslations);
-                }
-                faveCountryTranslations.add(translatedText);
-            }
-        }
-
-        public Map<String, List<String>> getTranslationsMap() {
-            return favoriteTranslationsMap;
-        }
     }
 
     private void circularRevealActivity() {
