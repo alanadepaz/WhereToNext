@@ -29,92 +29,96 @@ A travel planning / language learning app. Based on where you want to go, the ap
 * User can log in
 * User can log out
 * Profile page
-* Users can click on / search different countries 
+* Users can click on / search different countries
 * A page for a country to learn the essential phrases for travel
 * A map of the world where a user can click on different countries to see different phrases in their main language
-    * Integration with Google SDK/API
-* A map tab so people can see where to ask for directions
+  * Integration with Google SDK/API
 * Favorite phrases screen
-* Slide elements (phrases) to favorite them (using a gesture is a required story)
+* A gesture such as a slide up panel to go the the Favorite Phrases
 * An animation / external library for visual polish
 
 **Optional Nice-to-have Stories**
 
 * On the phrases page, you can listen to the phrases when you click on an audio button; pronunciation
+* A map tab so people can see where to ask for directions
 * A translation activity (like google translate)
 * Photos of different countries
-* It could be made a social app where people say what places are on their bucket list, where they've been, what phrases worked well for them or recommendations of where to go (I think it's maybe out of the scope of this project for now, though.) -> Post comments and check out other people's profiles
-* A way to save the countries on their profile bucket list, where they've been, or favorite phrases
+* It could be made a social app where people say what places are on their bucket list, where they've been, what phrases worked well for them or recommendations of where to go -> Post comments and check out other people's profiles
+* A way to save the countries on their profile bucket list or save where they've been
 * User ability to add photos from their travels
 * User ability to add written memories / journal
+* Settings screen
+* Side navigation menu
 
 ### 2. Screen Archetypes
 
 * Log In Screen
-   * User can log in
+  * User can log in
 * Create account screen
-   * User can create a new account
+  * User can create a new account
 * Search / Map of all the countries
-   * Users can click on / search different countries
-* Phrases page
-   * A page for a country to learn the essential phrases for travel
+  * Users can click on / search different countries
+* Phrases screen
+  * A page for a country to learn the essential phrases for travel
+* Favorite Phrases screen
+  * A page for the User to view their favorite phrases
 * Log Out screen
-   * User can log out
+  * User can log out
 
 
 ### 3. Navigation
 
 **Tab Navigation** (Tab to Screen)
 
-I don't plan on having tab navigation.
+Side menu navigation
+* Can navigate between the Maps fragment and Settings fragment
+  * Can logout from the side menu
+  * Must navigate to the Phrases activity from within the Maps fragment
 
 **Flow Navigation** (Screen to Screen)
 
 * User -> Country -> Language
 * Log In Screen
-   * If they do not have an account: Log In > Create Account
-   * Else: Log In > Search / Map of all the countries
+  * If they do not have an account: Log In > Create Account
+  * Else: Log In > Search / Map of all the countries
 * Create account screen
-   * Create account > Log In
+  * Create account > Log In
 * Search / Map of all the countries
-    * Search a country / click on a country > Phrases Page
+  * Search a country / click on a country > Phrases Page
 * Phrases page
-    * Click on button > Log Out
-    * (Optional) Click on button > Translation Page
-    * (Optional) Click on button > Map Page
+  * Click on button > Log Out
+  * Click back > Map fragment
+  * Slide up > Favorite Phrases panel
 
 **Technical Complexity**
 
 * Log In Screen
-    * Use Parse database to check whether a user exists and if the correct username and password are used
-    * Buttons and Intents can be used to navigate to either "create account" screen or to the main activity
-* Create account screen
-    * Interact with Parse database to create an account
-* Search / Map of all the countries
-    * Search feature
-    * Connect to Google SDK/API
-    * https://developers.google.com/maps/documentation/android-sdk/start
-    * Button and Intent can be used to navigate to the Phrases Page
-* Phrases Page
-    * Connect to translation API to translate different phrases to the proper language of that country
-    * https://medium.com/swlh/free-use-google-translate-api-in-android-with-no-limit-70977726d7cf
-    * It seems you have to pay but: https://cloud.google.com/translate
-    * There is also an ML kit for translation: https://developers.google.com/ml-kit/language/translation/android#java
-    * Internationalization feature would also be useful because then user would not be dependent on network connection
-    * Back button should bring you back to the Search/Map page
-    * Implementing Pronunciation (stretch): https://cloud.google.com/text-to-speech/
-
-* In between screens or on screens, use an animation / use external library. Some ideas: 
-    * https://www.freecodecamp.org/news/25-new-android-libraries-which-you-definitely-want-to-try-at-the-beginning-of-2017-45878d5408c0/
-        * https://github.com/airbnb/lottie-android
-
-    * https://github.com/wasabeef/awesome-android-ui
-        * https://github.com/roynx98/transition-button-android
-        * https://github.com/Yalantis/Side-Menu.Android
-        * https://github.com/mdgspace/RotatingText
-        * https://github.com/KeepSafe/TapTargetView
-
-    * LottieFiles
+  * Use Parse database to check whether a user exists and if the correct username and password are used
+  * Buttons and Intents can be used to navigate to either "create account" screen or to the main activity
+* Sign Up Screen
+  * Interact with Parse database to create an account and allow users to sign up
+* Map / Search Screen
+  * LottieDialog box with an animation pops up when the application is first opened
+  * Autocomplete search feature
+    * When a country is searched, it is highlighted using a GeoJsonLayer and imported country border coordinates from OpenStreetMap
+    * Map automatically moves to the country searched in order for it to be easily clicked upon
+  * Connect to Google Maps SDK
+  * Click on a country to navigate to the Phrases activity
+* Phrases Screen
+  * The useful phrases of the main language that a country speaks are shown here
+  * Google's Cloud Translation API allows for translations to the proper language based on the country clicked
+  * Pronunciation functionality implemented using Android's built-in Text-To-Speech (TTS) API
+    * If the language data is not saved onto the phone, a dialog pops where a user can opt to download the language data from the Google Play Store
+    * User can use a button to listen to the phrase being pronounced
+  * Users can favorite their favorite phrases using a toggle button
+    * Favorite phrase toggle button status is saved using Android's SharedPreferences
+    * Favorite phrases are saved onto the Parse database
+  * A circular reveal/disappear animation was implemented to/from this screen
+* Favorite Phrases panel
+  * A user's favorite phrases are shown here
+  * Communication with the Parse database must be done to grab all the Favorite Phrases
+* Side Navigation Menu
+  * Multiple tabs and icons are illustrated and users can click on them to navigate around the application
 
 ## Wireframes
 ![](https://i.imgur.com/aH37qRh.jpg)
@@ -124,9 +128,12 @@ I don't plan on having tab navigation.
 
 ### [BONUS] Interactive Prototype
 
-## Schema 
+## Schema
 * User
-* Country
+* ParsePhrase
+* ParseFavoritePhrase
+* FavoritePhrase
+* Translation
 
 
 ### Models
@@ -134,66 +141,88 @@ I don't plan on having tab navigation.
 
 | Property      | Type | Description     |
 | :---        |    :---   |          :--- |
-| firstName      | String       | first name of the user   |
-| lastName   | String        | last name of the user      |
 | username   | String        | username of user for logging in      |
 | password   | String        | password of user for logging in      |
 | email      | String       | email of the user   |
-| favoriteCountries      | Array of Pointers to a Country       | all the countries in which the user has favorited a phrase   |
+| profileImage      | File       | user uploaded profile image   |
 
-
-
-* Country
+* ParsePhrase
 
 | Property      | Type | Description     |
 | :---        |    :---   |          :--- |
-| language      | String       | main language of that country   |
-| phrases   | Array of Strings        | helpful phrases in the country's main language      |
-| favoritePhrases   | Array of Strings        | the user's favorited phrases      |
+| phrase   | String        | a helpful phrase in the country's main language      |
+
+* ParseFavoritePhrase
+
+| Property      | Type | Description     |
+| :---        |    :---   |          :--- |
+| user   | Pointer (to a User)        | a pointer to the user that favorited the phrase   |
+| countryName   | String        | the name of the country that the phrase belongs to      |
+| languageCode   | String        | the iso639_1 two character code of the target translated language      |
+| favoritePhrase   | Pointer (to a Phrase)        | a pointer to the Phrase object that the User favorited      |
+
+* FavoritePhrase
+  * Same model as the ParseFavoritePhrase, just another class to abstract the Parse logic away from the activity
+
+* Translation
+
+| Property      | Type | Description     |
+| :---        |    :---   |          :--- |
+| textToTranslate   | String        | the phrase to translate      |
+| languageOfTranslation   | String        | language to translate to      |
+| translation   | String        | translated phrase     |
 
 
 ### Networking
 List of network requests by screen:
 * Log In Screen
-    * (Parse: Read/GET) Query username to check if login matches
-    * (Parse: Read/GET) Query password to check if login matches
+  * (Parse: Read/GET) Query username to check if login matches
+  * (Parse: Read/GET) Query password to check if login matches
 * Create account screen
-    * (Parse: Update/PUT) Create a new user on the Parse database
+  * (Parse: Update/PUT) Create a new user on the Parse database
 * Search / Map of all the countries
-    * (Read/GET) Map from Google SDK
-    * (Read/GET) Clickable functionality
+  * (Read/GET) Map from Google SDK
 * Phrases page
-    * (Read/GET) Translations from Google API
-    * (Parse: Update/PUT) Favorite phrases
-    * (Parse: Update/PUT) Favorite countries
+  * (Read/GET) Translations from Google Cloud Translate API
+  * (Parse: GET) Phrases
+  * (Parse: Update/PUT) Favorite phrases
+  * (Parse: Update/PUT) Favorite countries
 
 
 Example Parse network request code:
 ```
-private void queryPosts() {
-        // specify what type of data we want to query - Country.class
-        ParseQuery<Post> query = ParseQuery.getQuery(Country.class);
-        // include data referred by user key
-        query.include(Country.KEY_USER);
-        // start an asynchronous call for posts
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting countries.", e);
-                    return;
-                }
+public FavoritePhrase getFavoritePhrase(String countryName, String phrase) {
 
-                // save received favorite countries to list and notify adapter of new data
-                allCountries.addAll(favoriteCountries);
-                adapter.notifyDataSetChanged();
+        try {
+            ParsePhrase parsePhrase = getParsePhrase(phrase);
+
+            ParseQuery<ParseFavoritePhrase> query = ParseQuery.getQuery("FavoritePhrase");
+            query.whereEqualTo("user", ParseUser.getCurrentUser());
+            query.whereEqualTo("countryName", countryName);
+            query.whereEqualTo("favoritePhrase", parsePhrase);
+
+            List<ParseFavoritePhrase> favePhraseList = query.find();
+
+            if (favePhraseList.size() > 0) {
+                ParseFavoritePhrase firstFavePhrase = favePhraseList.get(0);
+                FavoritePhrase favoritePhrase = new FavoritePhrase(firstFavePhrase.getCountryName(),
+                        firstFavePhrase.getLanguageCode(),
+                        firstFavePhrase.getFavoritePhrase().getPhrase());
+
+                return favoritePhrase;
             }
-        });
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 ```
 
-OPTIONAL: List endpoints if using existing API:
+Endpoints for existing API:
+* To grab country names: https://restcountries.com/v2/all?fields=name,languages
+* To grab translations: https://translation.googleapis.com/language/translate/v2?key={GOOGLE_API_KEY}=
+
 
 Attributions:
 Used two types of Star Icons for the Favorites functionality:
