@@ -94,7 +94,7 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.8'
 
     // Required if you want to use Mockito for unit tests
-    testImplementation 'org.mockito:mockito-core:2.7.22'
+    testImplementation 'org.mockito:mockito-core:3.0.0'
 
     // For navigation side bar
     implementation 'com.google.android.material:material:1.7.0-alpha02'
