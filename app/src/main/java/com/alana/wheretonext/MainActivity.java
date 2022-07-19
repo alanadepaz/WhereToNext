@@ -11,6 +11,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -55,7 +56,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startNotificationReceiver();
+        SharedPreferences sharedPrefs = this.getSharedPreferences("com.alana.wheretonext", Context.MODE_PRIVATE);
+        Boolean notifsToggled = sharedPrefs.getBoolean("NotifSwitch", true);
+
+        if (notifsToggled)
+        {
+            scheduleNotificationReceiver();
+        }
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -141,7 +148,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void startNotificationReceiver() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences sharedPrefs = this.getSharedPreferences("com.alana.wheretonext", Context.MODE_PRIVATE);
+        Boolean notifsToggled = sharedPrefs.getBoolean("NotifSwitch", true);
+
+        if (notifsToggled)
+        {
+            scheduleNotificationReceiver();
+        }
+    }
+
+    public void scheduleNotificationReceiver() {
 
         Intent alarmIntent = new Intent(this, NotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
@@ -150,8 +170,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 12);
-        calendar.set(Calendar.MINUTE, 52);
+        calendar.set(Calendar.HOUR_OF_DAY, 1);
+        calendar.set(Calendar.MINUTE, 49);
         calendar.set(Calendar.SECOND, 1);
 
         long INTERVAL_WEEK = AlarmManager.INTERVAL_DAY;
