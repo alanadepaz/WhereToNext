@@ -1,46 +1,35 @@
 package com.alana.wheretonext.service;
 
-import static android.provider.Settings.System.getString;
-
-import android.app.IntentService;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.alana.wheretonext.MainActivity;
 import com.alana.wheretonext.R;
 
-public class NotificationService extends IntentService {
+public class NotificationService extends JobIntentService {
 
     public static final String CHANNEL_ID = "WhereToNext_NotifChannel";
-    private Context context;
+    public static final int NOTIFICATION_ID = 1;
 
     public NotificationService() {
-        super("NotificationService");
         // Required empty constructor
     }
-
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
-     */
-    public NotificationService(String name, Context context) {
-        super(name);
-
-        this.context = context;
+    public static void enqueueWork(Context context, Intent work) {
+        enqueueWork(context, NotificationService.class, NOTIFICATION_ID, work);
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    protected void onHandleWork(@NonNull Intent intent) {
+        createNotificationChannel();
         sendPushNotif();
     }
 
@@ -61,13 +50,10 @@ public class NotificationService extends IntentService {
     }
 
     public void sendPushNotif() {
-        createNotificationChannel();
-
         // Create an explicit intent for an Activity in your app
         Intent notifyIntent = new Intent(getApplicationContext(), MainActivity.class);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_IMMUTABLE);
-
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_wtn_round)
@@ -82,9 +68,6 @@ public class NotificationService extends IntentService {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
 
-        // notificationId is a unique int for each notification defined
-        int notificationId = 1;
-
-        notificationManager.notify(notificationId, builder.build());
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 }

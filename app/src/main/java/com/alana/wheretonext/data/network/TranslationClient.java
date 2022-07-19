@@ -1,7 +1,5 @@
 package com.alana.wheretonext.data.network;
 
-import android.util.Log;
-
 import java.io.IOException;
 
 import com.alana.wheretonext.BuildConfig;

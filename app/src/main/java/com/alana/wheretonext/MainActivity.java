@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView tvEmail;
 
     private UserService userService = new UserService();
-    private NotificationService notificationService = new NotificationService("NotificationService", this);
+    private NotificationService notificationService = new NotificationService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,11 +150,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 4);
-        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
+        calendar.set(Calendar.MINUTE, 52);
         calendar.set(Calendar.SECOND, 1);
 
-        long INTERVAL_WEEK = AlarmManager.INTERVAL_DAY*7;
+        long INTERVAL_WEEK = AlarmManager.INTERVAL_DAY;
         manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 INTERVAL_WEEK, pendingIntent);
     }
