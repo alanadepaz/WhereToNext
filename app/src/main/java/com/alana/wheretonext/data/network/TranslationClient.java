@@ -18,7 +18,7 @@ public class TranslationClient {
 
     public static final String TAG = "Translation Client";
 
-    public static String getTranslation(String textToTranslate, String languageToTranslateTo) {
+    public String getTranslation(String textToTranslate, String languageToTranslateTo) {
 
         String translationResponse = "";
 

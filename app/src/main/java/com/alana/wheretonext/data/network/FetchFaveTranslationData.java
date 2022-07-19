@@ -18,6 +18,7 @@ public class FetchFaveTranslationData implements Runnable {
     private List<FavoritePhrase> allFavePhrases;
     private Map<String, List<String>> favoriteTranslationsMap;  // Map needed for favorite translations and association with country
 
+    private TranslationClient translationClient = new TranslationClient();
 
     public FetchFaveTranslationData(Context context, List<FavoritePhrase> allFavePhrases, List<String> allTranslations, String language, Map<String, List<String>> favoriteTranslationsMap) {
         this.context = context;
@@ -33,7 +34,7 @@ public class FetchFaveTranslationData implements Runnable {
 
         for (FavoritePhrase favePhrase : allFavePhrases) {
             // Grab all translations
-            String translatedText = TranslationClient.getTranslation(favePhrase.getFavoritePhrase(), favePhrase.getLanguageCode());
+            String translatedText = translationClient.getTranslation(favePhrase.getFavoritePhrase(), favePhrase.getLanguageCode());
 
             List<String> faveCountryTranslations = favoriteTranslationsMap.get(favePhrase.getCountryName());
 

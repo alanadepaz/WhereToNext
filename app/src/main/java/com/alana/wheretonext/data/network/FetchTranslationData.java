@@ -19,6 +19,8 @@ public class FetchTranslationData implements Runnable {
     private List<String> allTranslations;
     private String language;
 
+    private TranslationClient translationClient = new TranslationClient();
+
     public FetchTranslationData(Context context, List<String> allPhrases, List<String> allTranslations, String language) {
         this.context = context;
         this.allPhrases = allPhrases;
@@ -36,7 +38,7 @@ public class FetchTranslationData implements Runnable {
             Log.d(TAG, "Cached translation: " + translation);
             if (translation == null) {
                 if (language != null) {
-                    String translatedText = TranslationClient.getTranslation(phrase, language);
+                    String translatedText = translationClient.getTranslation(phrase, language);
 
                     translation = new Translation(phrase, language, translatedText);
                     translationDao.insertTranslation(translation);
