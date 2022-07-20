@@ -5,6 +5,8 @@ import com.alana.wheretonext.exceptions.UserException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
+import java.io.File;
+
 public class UserService {
     private UserRepository userRepository;
 
@@ -33,4 +35,8 @@ public class UserService {
     public String getUserEmail() { return userRepository.getUserEmail(); }
 
     public String getProfileImageURL() { return userRepository.getProfileImageURL(); }
+
+    public void setProfileImage(File photoFile) throws UserException {
+        userRepository.setProfileImage(photoFile);
+    }
 }

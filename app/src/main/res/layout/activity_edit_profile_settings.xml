@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.settings.EditProfileSettingsActivity">
+
+    <EditText
+        android:id="@+id/etEditPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvEditPassword"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="10dp"
+        android:ems="10"
+        android:hint="New Password"
+        android:minHeight="48dp" />
+
+    <TextView
+        android:id="@+id/tvEditPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etEditEmail"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Edit Password" />
+
+    <TextView
+        android:id="@+id/tvEditProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:text="Edit Profile"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvEditUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvEditProfile"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Edit Username" />
+
+    <EditText
+        android:id="@+id/etEditUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvEditUsername"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="10dp"
+        android:ems="10"
+        android:hint="New Username"
+        android:minHeight="48dp" />
+
+    <TextView
+        android:id="@+id/tvEditEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etEditUsername"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Edit Email" />
+
+    <EditText
+        android:id="@+id/etEditEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvEditEmail"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="10dp"
+        android:ems="10"
+        android:hint="New Email"
+        android:minHeight="48dp" />
+
+    <Button
+        android:id="@+id/btnSetProfilePic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etEditPassword"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Take a New Profile Picture" />
+
+
+</RelativeLayout>
