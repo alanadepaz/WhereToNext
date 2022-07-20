@@ -223,6 +223,8 @@ Endpoints for existing API:
 * To grab country names: https://restcountries.com/v2/all?fields=name,languages
 * To grab translations: https://translation.googleapis.com/language/translate/v2?key={GOOGLE_API_KEY}=
 
+How to run tests:
+Input the following line into the command line: ./gradlew test 
 
 Attributions:
 Used two types of Star Icons for the Favorites functionality:

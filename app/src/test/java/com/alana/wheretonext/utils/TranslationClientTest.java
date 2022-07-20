@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 
@@ -36,5 +37,14 @@ public class TranslationClientTest {
         translationResponse = mockTranslationClient.getTranslation(textToTranslate, languageToTranslateTo);
 
         verify(mockTranslationClient).getTranslation(textToTranslate, languageToTranslateTo);
+    }
+
+    @Test
+    public void testIfLanguageNull() {
+
+        when(mockTranslationClient.getTranslation(textToTranslate, null)).thenReturn(translationResponse);
+
+        // If the language is null there should be no interaction
+        verifyZeroInteractions(mockTranslationClient);
     }
 }
