@@ -73,9 +73,14 @@ public class SettingsFragment extends Fragment {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
+                    case R.id.settings_edit_profile:
+                        Intent editProfileIntent = new Intent(getContext(), EditProfileSettingsActivity.class);
+                        startActivity(editProfileIntent);
+                        break;
+
                     case R.id.settings_notifications:
-                        Intent intent = new Intent(getContext(), NotificationSettingsActivity.class);
-                        startActivity(intent);
+                        Intent notifsIntent = new Intent(getContext(), NotificationSettingsActivity.class);
+                        startActivity(notifsIntent);
                         break;
                 }
                 return true;

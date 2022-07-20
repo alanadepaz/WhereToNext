@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.text.Transliterator;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Gravity;
@@ -171,7 +172,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             // Bind the post data to the view elements
             tvPhrase.setText(phrase);
             tvTranslatedText.setText(translation);
-
+            
             // If the language of the country to travel to is the same as the one the user speaks
             if (language == null || Locale.getDefault().getLanguage().equals(language)) {
                 tvTranslatedText.setText(phrase);
