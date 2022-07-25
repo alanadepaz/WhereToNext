@@ -87,11 +87,4 @@ public class SettingsFragment extends Fragment {
             }
         });
     }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.settings_menu, menu);
-    }
 }
