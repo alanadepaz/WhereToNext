@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void scheduleNotificationReceiver() {
 
         Intent alarmIntent = new Intent(this, NotificationReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_IMMUTABLE);
 
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
