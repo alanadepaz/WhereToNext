@@ -186,6 +186,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new MapFragment()).commit();
                 break;
+            case R.id.nav_share:
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                String body = "Check out this project!";
+                String sub = "https://github.com/alanadepaz/WhereToNext";
+                shareIntent.putExtra(Intent.EXTRA_TEXT, body);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, sub);
+                startActivity(shareIntent);
+
+                break;
             case R.id.nav_settings:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new SettingsFragment()).commit();
