@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -129,6 +131,7 @@ public class PhrasesSection extends Section {
             btnAudio.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    startLikeAnimation(v);
                     speak(language);
                 }
             });
@@ -151,6 +154,11 @@ public class PhrasesSection extends Section {
             tts.setPitch(pitch);
             tts.setSpeechRate(speed);
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        }
+
+        private void startLikeAnimation(final View view){
+            Animation animation = AnimationUtils.loadAnimation(btnAudio.getContext(), R.anim.scale);
+            view.startAnimation(animation);
         }
     }
 

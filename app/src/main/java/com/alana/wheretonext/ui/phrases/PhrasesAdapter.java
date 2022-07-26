@@ -13,6 +13,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -181,6 +183,8 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             btnAudio.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    startLikeAnimation(v);
+
                     Log.d(TAG, "Audio button clicked");
                     speak(language);
                 }
@@ -194,6 +198,8 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             btnFavePhrase.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    startLikeAnimation(buttonView);
 
                     if (isChecked) {
                         SharedPreferences.Editor editor = context.getSharedPreferences("com.alana.wheretonext", MODE_PRIVATE).edit();
@@ -281,6 +287,11 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             tts.setPitch(pitch);
             tts.setSpeechRate(speed);
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        }
+
+        private void startLikeAnimation(final View view){
+            Animation animation = AnimationUtils.loadAnimation(context.getApplicationContext(), R.anim.scale);
+            view.startAnimation(animation);
         }
     }
 }
