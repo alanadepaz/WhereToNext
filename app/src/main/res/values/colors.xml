@@ -10,11 +10,17 @@
     <color name="red_orange">#f36b53</color>
     <color name="summer_blue">#7bbbc3</color>
     <color name="navy_blue">#242444</color>
+    <color name="yellow_beige">#fbf4d9</color>
     <color name="pale_yellow">#fbdb84</color>
     <color name="dull_blue">#cfdfe0</color>
     <color name="dull_red_orange">#e98268</color>
     <color name="dull_summer_blue">#91b9ba</color>
     <color name="dull_yellow">#fccc7c</color>
     <color name="blue_gray">#7c8194</color>
+
+    <color name="desert_brown">#C05E2B</color>
+    <color name="beige">#ECDBCC</color>
+    <color name="brown_black">#25161A</color>
+    <color name="light_gray">#F5F5F5</color>
 
 </resources>

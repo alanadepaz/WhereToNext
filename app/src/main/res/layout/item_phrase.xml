@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="100dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp"
+    android:layout_margin="5dp"
+    android:padding="10dp"
+    android:backgroundTint="@color/yellow_beige">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <TextView
         android:id="@+id/tvTranslatedText"
         android:layout_width="wrap_content"
@@ -14,6 +22,7 @@
         android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:textColor="@color/navy_blue"
+        android:fontFamily="@font/open_sans"
         tools:layout_editor_absoluteX="107dp"
         tools:layout_editor_absoluteY="129dp"
         tools:text="Hola" />
@@ -30,12 +39,13 @@
         android:layout_marginBottom="20dp"
         android:textSize="15sp"
         android:textColor="@color/navy_blue"
+        android:fontFamily="@font/open_sans"
         tools:text="Hello" />
 
     <ToggleButton
         android:id="@+id/btnFavePhrase"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
@@ -49,8 +59,8 @@
 
     <ImageButton
         android:id="@+id/btnAudio"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginTop="10dp"
@@ -61,4 +71,5 @@
         android:gravity="center_vertical"
         android:text="" />
 
-</RelativeLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
