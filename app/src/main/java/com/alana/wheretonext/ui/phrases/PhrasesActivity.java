@@ -261,6 +261,17 @@ public class PhrasesActivity extends AppCompatActivity implements NavigationView
                 startActivity(mapIntent);
                 break;
 
+            case R.id.nav_share:
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                String body = "Check out this project!";
+                String sub = "https://github.com/alanadepaz/WhereToNext";
+                shareIntent.putExtra(Intent.EXTRA_TEXT, body);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, sub);
+                startActivity(shareIntent);
+
+                break;
+
             case R.id.nav_settings:
                 Intent settingsIntent = new Intent(this, MainActivity.class);
                 settingsIntent.putExtra("fragmentToLoad", SETTINGS_FRAGMENT);
