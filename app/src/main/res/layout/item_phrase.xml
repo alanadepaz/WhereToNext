@@ -55,7 +55,8 @@
         android:background="@drawable/toggle_selector"
         android:backgroundTint="@color/navy_blue"
         android:textOff=""
-        android:textOn="" />
+        android:textOn=""
+        android:stateListAnimator="@anim/scale"/>
 
     <ImageButton
         android:id="@+id/btnAudio"
@@ -69,7 +70,8 @@
         android:background="@drawable/ic_megaphone"
         android:backgroundTint="@color/navy_blue"
         android:gravity="center_vertical"
-        android:text="" />
+        android:text=""
+        android:stateListAnimator="@anim/scale"/>
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
