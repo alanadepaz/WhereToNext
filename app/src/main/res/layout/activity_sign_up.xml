@@ -8,59 +8,80 @@
     android:layout_marginStart="10dp"
     android:layout_marginTop="10dp"
     android:orientation="vertical"
+    android:background="@color/yellow_beige"
     tools:context=".ui.signup.SignUpActivity">
 
-    <EditText
-        android:id="@+id/etSignUpUsername"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:alpha="0.75"
-        android:backgroundTint="@color/black"
-        android:ems="10"
-        android:hint="username"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/sign_up_for_an_account"
+        android:layout_margin="10dp"
+        android:textSize="20sp"/>
 
-    <EditText
-        android:id="@+id/etSignUpEmail"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signUpUsernameLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:alpha="0.75"
-        android:backgroundTint="@color/black"
-        android:ems="10"
-        android:hint="email"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:hint="@string/username"
+        app:endIconMode="clear_text"
+        app:helperText="Required*"
+        app:helperTextTextColor="@color/red_orange"
+        android:layout_marginBottom="10dp">
 
-    <EditText
-        android:id="@+id/etSignUpPassword"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSignUpUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.75"
+            android:ems="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signUpEmailLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:alpha="0.75"
-        android:backgroundTint="@color/black"
-        android:ems="10"
-        android:hint="password"
-        android:inputType="textPassword"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etUsername" />
+        android:hint="@string/email"
+        app:endIconMode="clear_text"
+        app:helperText="Required*"
+        app:helperTextTextColor="@color/red_orange"
+        android:layout_marginBottom="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSignUpEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.75"
+            android:ems="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signUpPasswordLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/password"
+        app:endIconMode="password_toggle"
+        app:helperText="Required*"
+        app:helperTextTextColor="@color/red_orange"
+        android:layout_marginBottom="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSignUpPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.75"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etUsername" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/btnNewUserSignUp"

@@ -27,6 +27,7 @@
         android:layout_marginTop="10dp"
         android:text="Username"
         android:textSize="20sp"
+        android:fontFamily="@font/cantata_one"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivProfileImage"
         tools:text="Username" />
@@ -38,6 +39,7 @@
         android:layout_marginStart="20dp"
         android:paddingBottom="5dp"
         android:text="Email"
+        android:fontFamily="@font/open_sans"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvUsername"
         tools:text="Email" />

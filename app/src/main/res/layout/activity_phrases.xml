@@ -51,10 +51,11 @@
                     android:id="@+id/tvCountryName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="50dp"
+                    android:fontFamily="@font/cantata_one"
+                    android:textColor="@color/navy_blue"
                     android:textSize="30dp"
                     android:textStyle="bold"
-                    android:layout_marginTop="50dp"
-                    android:textColor="@color/navy_blue"
                     tools:text="United States" />
             </RelativeLayout>
 
