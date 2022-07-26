@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.icu.text.Transliterator;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -31,8 +29,6 @@ import java.util.List;
 import java.util.Locale;
 
 import com.alana.wheretonext.R;
-
-import org.w3c.dom.Text;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
@@ -186,7 +182,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     Log.d(TAG, "Audio button clicked");
-                    speak();
+                    speak(language);
                 }
             });
 
@@ -268,10 +264,19 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             return null;
         }
 
-        private void speak() {
+        private void speak(String language) {
             String text = tvTranslatedText.getText().toString();
             float pitch = (float) 1;
             float speed = (float) 1;
+
+            Locale currLocale;
+            if (language != null) {
+                currLocale = new Locale(language);
+            } else {
+                currLocale = Locale.getDefault();
+            }
+
+            tts.setLanguage(currLocale);
 
             tts.setPitch(pitch);
             tts.setSpeechRate(speed);
