@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.alana.wheretonext.R;
+import com.alana.wheretonext.service.UserService;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
@@ -52,6 +53,8 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
     private SectionedRecyclerViewAdapter favePhrasesAdapter;
 
     private static TextToSpeech tts;
+
+    private static UserService userService = new UserService();
 
     public PhrasesAdapter(Context context,
                           List<String> phrases,
@@ -191,9 +194,9 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
             });
 
             SharedPreferences sharedPrefs = context.getSharedPreferences("com.alana.wheretonext", Context.MODE_PRIVATE);
-            Log.d(TAG, phrase + countryName);
+            Log.d(TAG, userService.getUserUsername() + phrase + countryName);
 
-            btnFavePhrase.setChecked(sharedPrefs.getBoolean(phrase + countryName, false));
+            btnFavePhrase.setChecked(sharedPrefs.getBoolean(userService.getUserUsername() + phrase + countryName, false));
 
             btnFavePhrase.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -203,7 +206,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
                     if (isChecked) {
                         SharedPreferences.Editor editor = context.getSharedPreferences("com.alana.wheretonext", MODE_PRIVATE).edit();
-                        editor.putBoolean(phrase + countryName, true);
+                        editor.putBoolean(userService.getUserUsername() + phrase + countryName, true);
                         editor.commit();
 
                         FavoritePhrase favePhrase = new FavoritePhrase(countryName, language, phrase);
@@ -213,7 +216,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
                     } else {
                         SharedPreferences.Editor editor = context.getSharedPreferences("com.alana.wheretonext", MODE_PRIVATE).edit();
-                        editor.putBoolean(phrase + countryName, false);
+                        editor.putBoolean(userService.getUserUsername() + phrase + countryName, false);
                         editor.commit();
 
                         FavoritePhrase favePhrase = phraseService.getFavoritePhrase(countryName, phrase);
@@ -222,7 +225,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
                         phraseService.unFavoritePhrase(favePhrase);
                     }
-                    Log.d(TAG, String.valueOf(sharedPrefs.getBoolean(phrase + countryName, false)));
+                    Log.d(TAG, String.valueOf(sharedPrefs.getBoolean(userService.getUserUsername() + phrase + countryName, false)));
                 }
             });
         }
