@@ -13,6 +13,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,18 +59,19 @@ public class PhraseService {
 
         List<FavoritePhrase> favoritePhraseList = new ArrayList<>();
 
+        List<ParseFavoritePhrase> parseFavoritePhraseList = null;
         try {
-            List<ParseFavoritePhrase> parseFavoritePhraseList = query.find();
-
-            for (ParseFavoritePhrase parseFavoritePhrase : parseFavoritePhraseList) {
-                FavoritePhrase favoritePhrase = new FavoritePhrase(parseFavoritePhrase.getCountryName(),
-                        parseFavoritePhrase.getLanguageCode(),
-                        parseFavoritePhrase.getFavoritePhrase().getPhrase());
-
-                favoritePhraseList.add(favoritePhrase);
-            }
+            parseFavoritePhraseList = query.find();
         } catch (ParseException e) {
             e.printStackTrace();
+        }
+
+        for (ParseFavoritePhrase parseFavoritePhrase : parseFavoritePhraseList) {
+            FavoritePhrase favoritePhrase = new FavoritePhrase(parseFavoritePhrase.getCountryName(),
+                    parseFavoritePhrase.getLanguageCode(),
+                    parseFavoritePhrase.getFavoritePhrase().getPhrase());
+
+            favoritePhraseList.add(favoritePhrase);
         }
 
         return favoritePhraseList;
