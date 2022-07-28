@@ -204,7 +204,7 @@ public class PhrasesAdapter extends RecyclerView.Adapter<PhrasesAdapter.ViewHold
 
                     startLikeAnimation(buttonView);
 
-                    if (isChecked) {
+                    if (phraseService.getFavoritePhrase(countryName, phrase) == null) {
                         SharedPreferences.Editor editor = context.getSharedPreferences("com.alana.wheretonext", MODE_PRIVATE).edit();
                         editor.putBoolean(userService.getUserUsername() + phrase + countryName, true);
                         editor.commit();
